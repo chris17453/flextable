@@ -1,0 +1,33 @@
+Metadata-Version: 1.0
+Name: flextable
+Version: 1.0.0
+Summary: UNKNOWN
+Home-page: https://github.com/chris17453/flex-table/
+Author: Charles Watkins
+Author-email: charles@titandws.com
+License: Creative Commons Attribution-Noncommercial-Share Alike license
+Description: # flextable
+        tabular data formatter, for code, cli or pipes
+        
+        
+        
+        ### Pipe a file into a table
+        ```
+        cat file | python flextable/cli.py  -d ':' --line 120 --length 10 -hc -hw -cc 9
+        ```
+        
+        ### load a file with the cli
+        ```
+        ft  -d ':' --line 0 --length 10 -cc 9
+        ```
+        
+        ### format with code
+        ```
+        import fte
+        
+        print table(args).format
+        ``
+        
+        
+        
+Platform: UNKNOWN

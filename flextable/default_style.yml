@@ -1,0 +1,70 @@
+# this is the default style file
+# you can copy this and edit as you wish
+# empty data will default
+#  [TL] [ColL] [Col[ColR] [T]  [TC]  [T]  [TR]
+#  [ L]                   [W]  [ V]  [W]  [ R]
+#  [LC]                   [H]  [ C]  [H]  [RC]
+#  [ L]                   [W]  [ V]  [W]  [ R]
+#  [BL]                   [B]  [BC]  [B]  [BR]
+---
+table:
+  name: Default
+
+  formatting:
+    whitespace: ''
+    line-ending: LRCF
+
+characters:
+  intersection:
+    center:
+    left-center:
+    right-center:
+    top-center:
+    bottom-center:
+  walls:
+    left:
+    right:
+    top:
+    bottom:
+  corners:
+    top-left:
+    top-right:
+    bottom-left:
+    bottom-right:
+  titles:
+    columns:
+      left:
+      right:
+      center:
+
+color:
+  intersection:
+    center:
+    left-center:
+    right-center:
+    top-center:
+    bottom-center:
+  walls:
+    left:
+    right:
+    top:
+    bottom:
+  corners:
+    top-left:
+    top-right:
+    bottom-left:
+    bottom-right:
+  titles:
+    columns:
+      left:
+      right:
+      center:
+  
+  cell:
+    error:
+    comment:
+    data:
+    active:
+    edit:
+    disabled:
+  
