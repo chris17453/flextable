@@ -1,0 +1,31 @@
+#TODO
+- finish features, test, document
+- create curses interface
+- impliment style/formatting
+- add html output
+- add xml output
+
+
+x file
+o columns
+x column-count
+o header-on-line
+o remove-quote
+o block-quote
+o data-on-line
+o line-numbers
+x border-style
+x footer
+x footer-columns
+o line-seperators .. maybe
+x error
+x comment
+x delimiter
+x -hide-errors
+x -hide-comments
+x -hide-whitespace
+x line
+x length
+x page
+o yaml
+o json

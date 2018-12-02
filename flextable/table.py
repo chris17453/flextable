@@ -4,10 +4,9 @@ import json
 import os
 import tempfile
 
+from style import style
 from colors import *
 
-def enum(**enums):
-    return type('Enum', (), enums)
 
 class table:
     data_type=enum(COMMENT=1,ERROR=2,DATA=3,WHITESPACE=4)
@@ -25,6 +24,11 @@ class table:
         self.delimiters={'field':',',  'comment':'#'}
         self.length=None
         self.starts_on=1
+        self.style=style()
+        self.header=True
+        self.footer=True
+        self.header_every=-1
+
         # TODO
         self.width='auto'
         # TODO
@@ -46,12 +50,22 @@ class table:
             self.hide_whitespace=args.hide_whitespace
             self.no_clip=False
             self.delimiters['field']=args.delimiter
+            if args.no_header==True:
+                self.header=False
+            if args.no_footer==True:
+                self.footer=False
+            self.header_every=args.header_every
             #auto name columns
             if args.column_count>-1:
                 self.column_count=args.column_count
                 self.columns=[]
                 for n in range(0,self.column_count):
                     self.columns.append("column{}".format(n+1))
+
+            # when specifically setting columns up... iverrides auto naming columns
+            if None != args.columns:
+                self.columns=args.columns
+                self.column_count=len(args.columns)
             
             
             if args.page>-1 and args.length>1:
@@ -163,21 +177,21 @@ class table:
         with open(self.file) as stream:
             for line in stream:
                 line_number+=1
-                
+
                 # if columns are defined in the header, pull those
                 if self.header_on_line==line_number:
                     results=self.process_line(line,line_number)
                     self.columns=results['data']
                     self.column_count=len(self.columns)
              
-
+                #print self.starts_on,line_number
                 # below visible window.. skip
                 if  self.starts_on>=line_number:
                     continue
 
                 results=self.process_line(line,line_number)
                     
-                print line_number,results['type']
+                #print line_number,results['type']
                 # skip comments if asked to
                 if results['type']==self.data_type.COMMENT and True == self.hide_comments: 
                     continue
@@ -190,7 +204,7 @@ class table:
                 if results['type']==self.data_type.WHITESPACE and True == self.hide_whitespace: 
                     continue
 
-                print -1 == self.length , self.starts_on<=line_number-1,line_number,self.starts_on
+                #print -1 == self.length , self.starts_on<=line_number-1,line_number,self.starts_on
                 if results['type']==self.data_type.DATA: 
                     # only process visible data. saves a lot of string manipulation
                     results=self.process_data(line,line_number)
@@ -207,7 +221,7 @@ class table:
                 if -1 !=self.length and buffer_length>self.length:
                     break
 
-                print line_number-1,self.starts_on,self.length
+                #print line_number-1,self.starts_on,self.length
                
                 results['visible_line_number']=visible_line
                 results['file_line_number']=line_number
@@ -216,46 +230,82 @@ class table:
 
 
         return buffer
-
-    def build_header(self):
+    
+    
+    def calculate_limits(self):
         tty_min_column_width=10
-        #tty_rows, tty_columns = os.popen('stty size', 'r').read().split()
-        tty_rows=30
-        tty_columns=80
+        tty_rows, tty_columns = os.popen('stty size', 'r').read().split()
+        tty_rows=int(tty_rows)
+        tty_columns=int(tty_columns)
+        #dev size
+        #tty_rows=30
+        #tty_columns=80
+
+        
         data_column_count=self.column_count
+        pad=data_column_count+1
 
         # no columns to return
         if data_column_count==0:
             self.column_character_width=-1
         else:
             if self.width=='auto':
-                self.column_character_width=int(tty_columns)/data_column_count
+                self.column_character_width=int(tty_columns-pad)/data_column_count
                 if self.column_character_width<tty_min_column_width:
                     self.column_character_width=tty_min_column_width
             else:
                 self.column_character_width=int(width)
 
-        self.total_width=self.column_character_width*data_column_count-1*data_column_count+1
-        
+        self.total_width=self.column_character_width*data_column_count+data_column_count-1
+
+
+    def build_header(self,footer=False,mid=False):
         # header
-        header=""
-        header="{0}|{1}".format(bcolors.OKBLUE,bcolors.ENDC)
-        
+
+        if False==footer:
+            base=self.style.characters.top
+            column=self.style.characters.header
+        else:
+                base=self.style.characters.bottom
+                column=self.style.characters.footer
+        if mid==True:
+                base=self.style.characters.center
+                column=self.style.characters.mid_header
+        header=base.left.render()
+
+        column_pad=0
+        if None!=column.left.text:
+            column_pad+=1
+        if None!=column.right.text:
+            column_pad+=1
+
         if None != self.columns:
+            index=0
             for c in self.columns:
-                if len(c)>self.column_character_width-2:
-                    wall_color=bcolors.WARNING
-                else:
-                    wall_color=bcolors.OKBLUE
+                column_display=u''
+                if None!=column.left.text:
+                    column_display=column.left.render()
+
+                column_display+=column.center.render(text=c,length=self.column_character_width-column_pad)
+                #print self.column_character_width-column_pad
+
+                if None!=column.right.text:
+                    column_display+=column.right.render()
                 
-                display=c
-                    
-                header+="{3}{4}{0}{2}{1}|{2}".format(
-                        self.format_string(display,self.column_character_width,' ',self.no_clip), #0
-                        wall_color, #1
-                        bcolors.ENDC, #2
-                        bcolors.HEADER,#3
-                        bcolors.UNDERLINE) #4
+
+                header+=column_display
+
+                # if we have overflow, change the column wall ont he right
+                if index<len(self.columns)-1:
+                    if len('{}'.format(c))>self.column_character_width-2:
+                        header+=base.center.render(override=self.style.color.overflow)
+                    else:
+                        header+=base.center.render()
+                index+=1
+        header+=base.right.render()
+        header+=u'{}'.format(reset.ALL)
+
+
         return header
             
     def build_rows(self,buffer):
@@ -263,29 +313,43 @@ class table:
         index=0
         
         for line in buffer:
-            columns="{0}|{1}".format(bcolors.OKBLUE,bcolors.ENDC)
-            print "E"
-            print line
+            columns=self.style.characters.walls.left.render()
+            #print line
             if self.data_type.DATA == line['type']:
                 for c in line['data']:
-                    print c
-                    if len('{}'.format(c))>self.column_character_width-2:
-                        wall_color=bcolors.WARNING
+                    columns+=self.style.color.data.render(c,length=self.column_character_width)
+                    # if we have overflow, change the column wall ont he right
+                    if len('{}'.format(c))>self.column_character_width:
+                        columns+=self.style.characters.walls.right.render(override=self.style.color.overflow)
                     else:
-                        wall_color=bcolors.OKBLUE
-                    columns+="{0}{1}|{2}".format(self.format_string(c,self.column_character_width,no_clip=self.no_clip),wall_color,bcolors.ENDC)
+                        columns+=self.style.characters.walls.right.render()
+                    
+                #only happend if we allow errored rows            
                 if len(line['data']) < self.column_count:
                     wall_color=bcolors.OKBLUE
                     for c in range(len(line['data']),self.column_count):
-                        columns+="{0}{1}|{2}".format(self.format_string("",self.column_character_width,no_clip=self.no_clip),wall_color,bcolors.ENDC)
+                        columns+=self.style.color.comment.render('',length=self.column_character_width)
+                        columns+=self.style.characters.walls.right.render(override=self.style.color.error)
+                          
+            
             
             if self.data_type.COMMENT ==  line['type'] or self.data_type.WHITESPACE==line['type']:
-                wall_color=bcolors.OKGREEN
-                columns="{1}|{2}{0}{1}|{2}".format(self.format_string(line['raw'],self.total_width,no_clip=self.no_clip),wall_color,bcolors.OKGREEN)
-                
+                left  =self.style.characters.walls.left.render()
+                center=self.style.color.comment.render(line['raw'],length=self.total_width)
+                right =self.style.characters.walls.right.render()
+                columns=u"{0}{1}{2}".format( left,
+                                            center,
+                                            right)
+            
             if self.data_type.ERROR ==  line['type']:
-                wall_color=bcolors.OKGREEN
-                columns="{1}|{2}{0}{1}|{2}".format(self.format_string(line['raw'],self.total_width,no_clip=self.no_clip),wall_color,bcolors.WARNING)
+                left  =self.style.characters.walls.left.render()
+                center=self.style.color.error.render(line['raw'],length=self.total_width)
+                right =self.style.characters.walls.right.render()
+                columns=u"{0}{1}{2}".format( left,
+                                            center,
+                                            right)
+            columns+=u'{}'.format(reset.ALL)
+
             rows.append(columns)
             index+=1
             #if index== int(tty_rows)-5:
@@ -319,17 +383,28 @@ class table:
 
         # now we have a file, from stdin or a file on the system that we can access    
         buffer=self.process_file()
-        print buffer
-        
+        #print buffer
+        self.calculate_limits()
         #print(buffer)
         header=self.build_header()
+        mid_header=self.build_header(mid=True)
         rows=self.build_rows(buffer)
+        footer=self.build_header(footer=True)
         
         
-        print (header)
+        if self.header==True:
+            print (header)
+        index=1
         for row in rows:
             print (row)
-        print (header)
+            if self.header_every>0:                
+                # we want it every N, but not if it bunches up on the footer
+                if index%self.header_every==0 and len(buffer)-index>self.header_every :
+                    print (mid_header)
+
+            index+=1
+        if self.footer==True:
+            print (footer)
 
 
     
