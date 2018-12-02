@@ -233,7 +233,7 @@ class table:
     
     
     def calculate_limits(self):
-        tty_min_column_width=10
+        tty_min_column_width=1
         tty_rows, tty_columns = os.popen('stty size', 'r').read().split()
         tty_rows=int(tty_rows)
         tty_columns=int(tty_columns)

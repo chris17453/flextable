@@ -14,7 +14,8 @@ def cli_main():
 
                                                
     # data
-    parser.add_argument('-f'      ,'--file'                 , help='The input file to read')
+    parser.add_argument('file', help='The input file to read')
+
     parser.add_argument('-c'      ,'--columns'              , help='column names', nargs='+')
     
     parser.add_argument('-cc'     ,'--column-count'         , help='column count, auto name columns 1-n'                ,default=-1, type=int)
@@ -53,9 +54,10 @@ def cli_main():
     parser.add_argument('-j'      ,'--json'                 , help='output json')
 
     args=parser.parse_args()
-
-    table(args)
-
+    try:
+        table(args)
+    except Exception as ex:
+        print "Error:",ex
 
 if __name__ == "__main__":
     cli_main()
