@@ -59,7 +59,7 @@ class table:
             if args.column_count>-1:
                 self.config.column_count=args.column_count
                 self.config.columns=[]
-                for n in range(0,self.column_count):
+                for n in range(0,self.config.column_count):
                     self.config.columns.append("column{}".format(n+1))
 
             # when specifically setting columns up... iverrides auto naming columns
