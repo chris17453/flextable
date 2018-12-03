@@ -24,7 +24,7 @@ class table:
 
 
         if None !=args:
-            if args.tty_width==-1:
+            if args.column_width==-1:
                 try:
                     self.stdscr = curses.initscr()
                     curses.cbreak()
@@ -37,8 +37,8 @@ class table:
                     curses.echo()
                     curses.endwin()
             else:
-                self.config.row_height=args.tty_height
-                self.config.column_width=args.tty_width
+                self.config.row_height=args.column_height
+                self.config.column_width=args.column_width
 
             self.args=args
             self.config.file=args.file

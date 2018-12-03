@@ -25,8 +25,8 @@ def cli_main():
     # table template 
     #parser.add_argument('-ln'     ,'--line-numbers'         , help='show line numbers'                                  ,action='store_true', default=False)
     #parser.add_argument('-bs'     ,'--border-style'         , help='change table style, user definable'                 ,default='default_style.yml')
-    parser.add_argument('-nft'    ,'--no-footer'            , help='dont show the footer'                               ,action='store_false', default=False,dest='footer')
-    parser.add_argument('-nhd'    ,'--no-header'            , help='dont show header'                                   ,action='store_false', default=False,dest='header')
+    parser.add_argument('-nft'    ,'--no-footer'            , help='dont show the footer'                               ,action='store_false', default=True,dest='footer')
+    parser.add_argument('-nhd'    ,'--no-header'            , help='dont show header'                                   ,action='store_false', default=True,dest='header')
     parser.add_argument('-ftc'    ,'--footer-columns'       , help='footer has column names'                            ,action='store_true', default=True)
     parser.add_argument('-hde'    ,'--header-every'         , help='show header every (n) rows'                         ,default=-1, type=int)
 
@@ -48,8 +48,8 @@ def cli_main():
     parser.add_argument('-p'      ,'--page'                 , help='page to start displaying, requires length parameter',type=int,default=-1)
  
     # output
-    parser.add_argument('-ttyw'   ,'--tty-width'            , help='width of output in characters'                      ,default=-1, type=int,)
-    parser.add_argument('-ttyh'   ,'--tty-height'           , help='height of output window in characters'              ,default=-1, type=int)
+    parser.add_argument('-ttyw'   ,'--tty-width'            , help='width of output in characters'                      ,default=-1, type=int,dest='column_width')
+    parser.add_argument('-ttyh'   ,'--tty-height'           , help='height of output window in characters'              ,default=-1, type=int,dest='row_height')
     #parser.add_argument('-y'      ,'--yaml'                 , help='output yaml')
     #parser.add_argument('-j'      ,'--json'                 , help='output json')
 

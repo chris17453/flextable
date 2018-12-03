@@ -27,7 +27,7 @@ class table_config:
         # TODO
         # comments align on tabstops
         self.tab_stop=8
-        self.row_heigh=-1
+        self.row_height=-1
         self.column_width=-1
         self.tty_width=0
         self.tty_height=0
