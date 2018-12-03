@@ -54,10 +54,10 @@ def cli_main():
     #parser.add_argument('-j'      ,'--json'                 , help='output json')
 
     args=parser.parse_args()
-    try:
-        table(args)
-    except Exception as ex:
-        print "Error:",ex
+    #try:
+    table(args)
+    # except Exception as ex:
+    #    print "Error:",ex
 
 if __name__ == "__main__":
     cli_main()

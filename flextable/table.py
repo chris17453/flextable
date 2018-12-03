@@ -9,11 +9,9 @@ from style import style
 from colors import *
 
 
-class table:
-    data_type=enum(COMMENT=1,ERROR=2,DATA=3,WHITESPACE=4)
-        
-    def __init__(self,args=None,data=None):
-        self.data=data
+class table_config:
+    def __init__(self):
+        self.file=None
         self.remove_quote=True
         self.block_quote=None
         self.column_count=0
@@ -26,12 +24,9 @@ class table:
         self.delimiters={'field':',',  'comment':'#'}
         self.length=None
         self.starts_on=1
-        self.style=style()
         self.header=True
         self.footer=True
         self.header_every=-1
-
-        # TODO
         self.width='auto'
         # TODO
         # exapanding from fixed point
@@ -39,6 +34,20 @@ class table:
         # TODO
         # comments align on tabstops
         self.tab_stop=8
+        self.row_heigh=-1
+        self.column_width=-1
+
+class table:
+
+
+    data_type=enum(COMMENT=1,ERROR=2,DATA=3,WHITESPACE=4)
+    
+        
+    def __init__(self,args=None,data=None):
+        self.style=style()
+        self.data=data
+        self.config=table_config()
+
 
         if None !=args:
             if args.tty_width==-1:
@@ -47,57 +56,56 @@ class table:
                     curses.cbreak()
                     curses.noecho()
                     self.stdscr.keypad(1)
-                    self.row_height,self.column_width = self.stdscr.getmaxyx()
+                    self.config.row_height,self.config.column_width = self.stdscr.getmaxyx()
                 finally:
                     curses.nocbreak()
                     self.stdscr.keypad(0)
                     curses.echo()
                     curses.endwin()
             else:
-                self.row_height=args.tty_height
-                self.column_width=args.tty_width
-
+                self.config.row_height=args.tty_height
+                self.config.column_width=args.tty_width
 
             self.args=args
-            self.remove_quote=args.remove_quote
-            self.block_quote==args.block_quote
+            self.config.file=args.file
+            self.config.remove_quote=args.remove_quote
+            self.config.block_quote==args.block_quote
                     
-            self.header_on_line=args.header_on_line
-            self.data_on_line=args.data_on_line
-            self.hide_comments=args.hide_comments
-            self.hide_errors=args.hide_errors
-            self.hide_whitespace=args.hide_whitespace
-            self.no_clip=False
-            self.delimiters['field']=args.delimiter
+            self.config.header_on_line=args.header_on_line
+            self.config.data_on_line=args.data_on_line
+            self.config.hide_comments=args.hide_comments
+            self.config.hide_errors=args.hide_errors
+            self.config.hide_whitespace=args.hide_whitespace
+            self.config.no_clip=False
+            self.config.delimiters['field']=args.delimiter
             if args.no_header==True:
-                self.header=False
+                self.config.header=False
             if args.no_footer==True:
-                self.footer=False
-            self.header_every=args.header_every
+                self.config.footer=False
+            self.config.header_every=args.header_every
             #auto name columns
             if args.column_count>-1:
-                self.column_count=args.column_count
-                self.columns=[]
+                self.config.column_count=args.column_count
+                self.config.columns=[]
                 for n in range(0,self.column_count):
-                    self.columns.append("column{}".format(n+1))
+                    self.config.columns.append("column{}".format(n+1))
 
             # when specifically setting columns up... iverrides auto naming columns
             if None != args.columns:
-                self.columns=args.columns
-                self.column_count=len(args.columns)
+                self.config.columns=args.columns
+                self.config.column_count=len(args.columns)
             
             
             if args.page>-1 and args.length>1:
-                self.starts_on=args.page*args.length+1
+                self.config.starts_on=args.page*args.length+1
             if self.args.line>-1:
-                self.starts_on=args.line
-            self.length=args.length
+                self.config.starts_on=args.line
+            self.config.length=args.length
 
         else:
             self.args=None
 
-        self.file=None
-        self.is_temp_file=False
+        self.config.is_temp_file=False
         self.results=[]
 
 
@@ -105,25 +113,12 @@ class table:
 
         self.format()
 
-    def format_string(self,data,length,fill_character=' ',no_clip=False):
-        if None == data:
-            data=''
-            #TODO tabstop/tab
-            data=data.replace('\t','       ')
-        data='{}'.format(data)
-        if length==-1:
-            return data
-        if False==no_clip:
-            return data[:length-2].ljust(length-2,fill_character)
-        else:
-            return data.ljust(length-2,fill_character)
-
 
     def process_line(self,line,line_number=0):
         err=None
         line_data=None
-        if self.data_on_line>line_number:
-            line_type=self.data_type.COMMENT
+        if self.config.data_on_line>line_number:
+            line_type=self.config.data_type.COMMENT
             line_data=[line]
         else:
             line_type=self.data_type.DATA
@@ -131,7 +126,7 @@ class table:
                 line_type=self.data_type.WHITESPACE
                 line_data=[line]
             else:
-                if line[0] is self.delimiters['comment']:
+                if line[0] is self.config.delimiters['comment']:
                     line_data=[line]
                     line_type=self.data_type.COMMENT
         
@@ -141,9 +136,9 @@ class table:
     def process_data(self,line,line_number):
         err=None
         # ok its data. lets split it up and check for errors
-        line_data=line.split(self.delimiters['field'])
+        line_data=line.split(self.config.delimiters['field'])
         line_column_count=len(line_data)
-        column_count=self.column_count
+        column_count=self.config.column_count
 
         # mark the row as an error and create a message if column counts are invalid, if there are column counts
         if None !=column_count:
@@ -157,7 +152,7 @@ class table:
                 line_type=self.data_type.ERROR
         # strip delimiters from field if block quoted (xlsx export to csv?)
         # if none just add the field
-        if True == self.remove_quote:
+        if True == self.config.remove_quote:
             line_data_cleaned=[]
             for d in line_data:
                 strip=False
@@ -169,8 +164,8 @@ class table:
                         if d[0]=='\'' and d[-1]=='\'':
                             strip=True
                         else:
-                            if None != self.block_quote:
-                                if d[0]==self.block_quote and d[-1]==self.block_quote:
+                            if None != self.config.block_quote:
+                                if d[0]==self.config.block_quote and d[-1]==self.config.block_quote:
                                     strip=True
 
                 if True==strip:
@@ -197,34 +192,34 @@ class table:
         buffer=[]
         #print self.starts_on,self.length
         #exit(1)
-        with open(self.file) as stream:
+        with open(self.config.file) as stream:
             for line in stream:
                 line_number+=1
 
                 # if columns are defined in the header, pull those
-                if self.header_on_line==line_number:
+                if self.config.header_on_line==line_number:
                     results=self.process_line(line,line_number)
-                    self.columns=results['data']
-                    self.column_count=len(self.columns)
+                    self.config.columns=results['data']
+                    self.config.column_count=len(self.columns)
              
                 #print self.starts_on,line_number
                 # below visible window.. skip
-                if  self.starts_on>=line_number:
+                if  self.config.starts_on>=line_number:
                     continue
 
                 results=self.process_line(line,line_number)
                     
                 #print line_number,results['type']
                 # skip comments if asked to
-                if results['type']==self.data_type.COMMENT and True == self.hide_comments: 
+                if results['type']==self.data_type.COMMENT and True == self.config.hide_comments: 
                     continue
                 
                 # skip errors if asked to
-                if results['type']==self.data_type.ERROR and True == self.hide_errors: 
+                if results['type']==self.data_type.ERROR and True == self.config.hide_errors: 
                     continue
 
                 # skip errors if asked to
-                if results['type']==self.data_type.WHITESPACE and True == self.hide_whitespace: 
+                if results['type']==self.data_type.WHITESPACE and True == self.config.hide_whitespace: 
                     continue
 
                 #print -1 == self.length , self.starts_on<=line_number-1,line_number,self.starts_on
@@ -232,7 +227,7 @@ class table:
                     # only process visible data. saves a lot of string manipulation
                     results=self.process_data(line,line_number)
                     # skip errors if asked to
-                    if results['type']==self.data_type.ERROR and True == self.hide_errors: 
+                    if results['type']==self.data_type.ERROR and True == self.config.hide_errors: 
                         continue
                 
 
@@ -241,7 +236,7 @@ class table:
                 visible_line+=1
                 
                 # if we are past our collection point... jet, lets not waste time here
-                if -1 !=self.length and buffer_length>self.length:
+                if -1 !=self.config.length and buffer_length>self.config.length:
                     break
 
                 #print line_number-1,self.starts_on,self.length
@@ -266,21 +261,21 @@ class table:
         # tty_columns=80
 
         
-        data_column_count=self.column_count
+        data_column_count=self.config.column_count
         pad=data_column_count+1
 
         # no columns to return
         if data_column_count==0:
-            self.column_character_width=-1
+            self.config.column_character_width=-1
         else:
-            if self.width=='auto':
-                self.column_character_width=int(self.column_width-1-pad)/data_column_count
-                if self.column_character_width<tty_min_column_width:
-                    self.column_character_width=tty_min_column_width
+            if self.config.width=='auto':
+                self.config.column_character_width=int(self.config.column_width-1-pad)/data_column_count
+                if self.config.column_character_width<tty_min_column_width:
+                    self.config.column_character_width=tty_min_column_width
             else:
-                self.column_character_width=int(width)
+                self.config.column_character_width=int(self.config.width)
 
-        self.total_width=self.column_character_width*data_column_count+data_column_count-1
+        self.config.total_width=self.config.column_character_width*data_column_count+data_column_count-1
 
 
     def build_header(self,footer=False,mid=False):
@@ -303,14 +298,14 @@ class table:
         if None!=column.right.text:
             column_pad+=1
 
-        if None != self.columns:
+        if None != self.config.columns:
             index=0
-            for c in self.columns:
+            for c in self.config.columns:
                 column_display=u''
                 if None!=column.left.text:
                     column_display=column.left.render()
 
-                column_display+=column.center.render(text=c,length=self.column_character_width-column_pad)
+                column_display+=column.center.render(text=c,length=self.config.column_character_width-column_pad)
                 #print self.column_character_width-column_pad
 
                 if None!=column.right.text:
@@ -320,8 +315,8 @@ class table:
                 header+=column_display
 
                 # if we have overflow, change the column wall ont he right
-                if index<len(self.columns)-1:
-                    if len('{}'.format(c))>self.column_character_width-2:
+                if index<len(self.config.columns)-1:
+                    if len('{}'.format(c))>self.config.column_character_width-2:
                         header+=base.center.render(override=self.style.color.overflow)
                     else:
                         header+=base.center.render()
@@ -341,25 +336,25 @@ class table:
                 #print line
                 if self.data_type.DATA == line['type']:
                     for c in line['data']:
-                        columns+=self.style.color.data.render(c,length=self.column_character_width)
+                        columns+=self.style.color.data.render(c,length=self.config.column_character_width)
                         # if we have overflow, change the column wall ont he right
-                        if len('{}'.format(c))>self.column_character_width:
+                        if len('{}'.format(c))>self.config.column_character_width:
                             columns+=self.style.characters.walls.right.render(override=self.style.color.overflow)
                         else:
                             columns+=self.style.characters.walls.right.render()
                         
                     #only happend if we allow errored rows            
-                    if len(line['data']) < self.column_count:
+                    if len(line['data']) < self.config.column_count:
                         wall_color=bcolors.OKBLUE
-                        for c in range(len(line['data']),self.column_count):
-                            columns+=self.style.color.comment.render('',length=self.column_character_width)
+                        for c in range(len(line['data']),self.config.column_count):
+                            columns+=self.style.color.comment.render('',length=self.config.column_character_width)
                             columns+=self.style.characters.walls.right.render(override=self.style.color.error)
                             
                 
                 
                 if self.data_type.COMMENT ==  line['type'] or self.data_type.WHITESPACE==line['type']:
                     left  =self.style.characters.walls.left.render()
-                    center=self.style.color.comment.render(line['raw'],length=self.total_width)
+                    center=self.style.color.comment.render(line['raw'],length=self.config.total_width)
                     right =self.style.characters.walls.right.render()
                     columns=u"{0}{1}{2}".format( left,
                                                 center,
@@ -367,7 +362,7 @@ class table:
                 
                 if self.data_type.ERROR ==  line['type']:
                     left  =self.style.characters.walls.left.render()
-                    center=self.style.color.error.render(line['raw'],length=self.total_width)
+                    center=self.style.color.error.render(line['raw'],length=self.config.total_width)
                     right =self.style.characters.walls.right.render()
                     columns=u"{0}{1}{2}".format( left,
                                                 center,
@@ -396,17 +391,16 @@ class table:
                 line=sys.stdin.read()
                 os.write(fd,line)
                 os.close(fd)
-                self.file=temp_path
-                self.is_temp_file=True
-                buffer=self.process_file()
+                self.config.file=temp_path
+                self.config.is_temp_file=True
             else:
-                if None == self.args.file:
+                if None == self.config.file:
                     raise Exception("No input file available" )
-                self.file=self.args.file
-                if False == os.path.exists(self.file):
+                if False == os.path.exists(self.config.file):
                     raise Exception("file does not exist" )
-                if False == os.path.isfile(self.file):
+                if False == os.path.isfile(self.config.file):
                     raise Exception("not a valid file")
+            buffer=self.process_file()
         else:
             buffer=self.data
 
@@ -422,18 +416,18 @@ class table:
         footer=self.build_header(footer=True)
         
         
-        if self.header==True:
+        if self.config.header==True:
             print (header)
         index=1
         for row in rows:
             print (row)
-            if self.header_every>0:                
+            if self.config.header_every>0:                
                 # we want it every N, but not if it bunches up on the footer
-                if index%self.header_every==0 and len(buffer)-index>self.header_every :
+                if index%self.config.header_every==0 and len(buffer)-index>self.config.header_every :
                     print (mid_header)
 
             index+=1
-        if self.footer==True:
+        if self.config.footer==True:
             print (footer)
 
 
