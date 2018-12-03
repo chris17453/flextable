@@ -335,50 +335,53 @@ class table:
     def build_rows(self,buffer):
         rows=[]
         index=0
-        
-        for line in buffer:
-            columns=self.style.characters.walls.left.render()
-            #print line
-            if self.data_type.DATA == line['type']:
-                for c in line['data']:
-                    columns+=self.style.color.data.render(c,length=self.column_character_width)
-                    # if we have overflow, change the column wall ont he right
-                    if len('{}'.format(c))>self.column_character_width:
-                        columns+=self.style.characters.walls.right.render(override=self.style.color.overflow)
-                    else:
-                        columns+=self.style.characters.walls.right.render()
-                    
-                #only happend if we allow errored rows            
-                if len(line['data']) < self.column_count:
-                    wall_color=bcolors.OKBLUE
-                    for c in range(len(line['data']),self.column_count):
-                        columns+=self.style.color.comment.render('',length=self.column_character_width)
-                        columns+=self.style.characters.walls.right.render(override=self.style.color.error)
-                          
-            
-            
-            if self.data_type.COMMENT ==  line['type'] or self.data_type.WHITESPACE==line['type']:
-                left  =self.style.characters.walls.left.render()
-                center=self.style.color.comment.render(line['raw'],length=self.total_width)
-                right =self.style.characters.walls.right.render()
-                columns=u"{0}{1}{2}".format( left,
-                                            center,
-                                            right)
-            
-            if self.data_type.ERROR ==  line['type']:
-                left  =self.style.characters.walls.left.render()
-                center=self.style.color.error.render(line['raw'],length=self.total_width)
-                right =self.style.characters.walls.right.render()
-                columns=u"{0}{1}{2}".format( left,
-                                            center,
-                                            right)
-            columns+=u'{}'.format(reset.ALL)
+        if True == isinstance(buffer,list):
+            for line in buffer:
+                columns=self.style.characters.walls.left.render()
+                #print line
+                if self.data_type.DATA == line['type']:
+                    for c in line['data']:
+                        columns+=self.style.color.data.render(c,length=self.column_character_width)
+                        # if we have overflow, change the column wall ont he right
+                        if len('{}'.format(c))>self.column_character_width:
+                            columns+=self.style.characters.walls.right.render(override=self.style.color.overflow)
+                        else:
+                            columns+=self.style.characters.walls.right.render()
+                        
+                    #only happend if we allow errored rows            
+                    if len(line['data']) < self.column_count:
+                        wall_color=bcolors.OKBLUE
+                        for c in range(len(line['data']),self.column_count):
+                            columns+=self.style.color.comment.render('',length=self.column_character_width)
+                            columns+=self.style.characters.walls.right.render(override=self.style.color.error)
+                            
+                
+                
+                if self.data_type.COMMENT ==  line['type'] or self.data_type.WHITESPACE==line['type']:
+                    left  =self.style.characters.walls.left.render()
+                    center=self.style.color.comment.render(line['raw'],length=self.total_width)
+                    right =self.style.characters.walls.right.render()
+                    columns=u"{0}{1}{2}".format( left,
+                                                center,
+                                                right)
+                
+                if self.data_type.ERROR ==  line['type']:
+                    left  =self.style.characters.walls.left.render()
+                    center=self.style.color.error.render(line['raw'],length=self.total_width)
+                    right =self.style.characters.walls.right.render()
+                    columns=u"{0}{1}{2}".format( left,
+                                                center,
+                                                right)
+                columns+=u'{}'.format(reset.ALL)
 
-            rows.append(columns)
-            index+=1
-            #if index== int(tty_rows)-5:
-            #    index=0
-            #    rows.append(self.)
+                rows.append(columns)
+                index+=1
+                #if index== int(tty_rows)-5:
+                #    index=0
+                #    rows.append(self.)
+        else:
+            raise Exception ("data is invalid: ->".format(buffer))
+
         return rows
 
             
