@@ -210,7 +210,7 @@ class table:
                 if -1 !=self.config.length and buffer_length>self.config.length:
                     break
 
-                print line_number-1,self.starts_on,self.length
+                #print line_number-1,self.starts_on,self.length
                
                 results['visible_line_number']=visible_line
                 results['file_line_number']=line_number
@@ -357,6 +357,7 @@ class table:
         #here we either pull data from a file or read it from stdio as a if someone is  "cat something|ft"
         #if its a pipe, lets shove it into a temp file
         if None ==self.data:
+            print "File"
             if select.select([sys.stdin,],[],[],0.0)[0]:
                 fd, temp_path = tempfile.mkstemp()
                 line=sys.stdin.read()
@@ -365,6 +366,7 @@ class table:
                 self.config.file=temp_path
                 self.config.is_temp_file=True
             else:
+                print "data"
                 if None == self.config.file:
                     raise Exception("No input file available" )
                 if False == os.path.exists(self.config.file):
