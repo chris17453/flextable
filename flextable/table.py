@@ -52,10 +52,8 @@ class table:
             self.config.hide_whitespace=args.hide_whitespace
             self.config.no_clip=False
             self.config.delimiters['field']=args.delimiter
-            if args.no_header==True:
-                self.config.header=False
-            if args.no_footer==True:
-                self.config.footer=False
+            self.config.header=args.header
+            self.config.footer=args.footer
             self.config.header_every=args.header_every
             #auto name columns
             if args.column_count>-1:
