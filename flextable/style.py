@@ -54,9 +54,11 @@ class color:
         if None == text:
             text=''
             #TODO tabstop/tab
+        
+        # make safe
+        text=u'{}'.format(text)
         text=text.replace('\t','       ')
         
-        text=u'{}'.format(text)
         text=text.rstrip()
         if length!=None:
             text=text[:length].ljust(length,fill_character)
