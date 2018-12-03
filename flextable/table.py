@@ -14,24 +14,6 @@ class table:
         
     def __init__(self,args=None,data=None):
         self.data=data
-        if args.tty_width==-1:
-            try:
-                self.stdscr = curses.initscr()
-                curses.cbreak()
-                curses.noecho()
-                self.stdscr.keypad(1)
-                self.row_height,self.column_width = self.stdscr.getmaxyx()
-            finally:
-                curses.nocbreak()
-                self.stdscr.keypad(0)
-                curses.echo()
-                curses.endwin()
-        else:
-            self.row_height=args.tty_height
-            self.column_width=args.tty_width
-
-
-
         self.remove_quote=True
         self.block_quote=None
         self.column_count=0
@@ -59,6 +41,23 @@ class table:
         self.tab_stop=8
 
         if None !=args:
+            if args.tty_width==-1:
+                try:
+                    self.stdscr = curses.initscr()
+                    curses.cbreak()
+                    curses.noecho()
+                    self.stdscr.keypad(1)
+                    self.row_height,self.column_width = self.stdscr.getmaxyx()
+                finally:
+                    curses.nocbreak()
+                    self.stdscr.keypad(0)
+                    curses.echo()
+                    curses.endwin()
+            else:
+                self.row_height=args.tty_height
+                self.column_width=args.tty_width
+
+
             self.args=args
             self.remove_quote=args.remove_quote
             self.block_quote==args.block_quote

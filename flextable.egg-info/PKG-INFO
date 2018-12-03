@@ -1,6 +1,6 @@
 Metadata-Version: 1.0
 Name: flextable
-Version: 1.0.4
+Version: 1.0.5
 Summary: UNKNOWN
 Home-page: https://github.com/chris17453/flex-table/
 Author: Charles Watkins
@@ -18,14 +18,14 @@ Description: # flextable
         
         ### load a file with the cli
         ```
-        ft  -d ':' --line 0 --length 10 -cc 9
+        flextable  -d ':' --line 0 --length 10 -cc 9
         ```
         
         ### format with code
         ```
-        import fte
+        from flextable import table
         
-        print table(args).format
+        print table(args).format()
         ``
         
         
