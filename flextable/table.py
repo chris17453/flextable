@@ -12,8 +12,8 @@ from colors import *
 class table:
     data_type=enum(COMMENT=1,ERROR=2,DATA=3,WHITESPACE=4)
         
-    def __init__(self,args=None):
-
+    def __init__(self,args=None,data=None):
+        self.data=data
         if args.tty_width==-1:
             try:
                 self.stdscr = curses.initscr()
@@ -388,26 +388,29 @@ class table:
 
         #here we either pull data from a file or read it from stdio as a if someone is  "cat something|ft"
         #if its a pipe, lets shove it into a temp file
-        if select.select([sys.stdin,],[],[],0.0)[0]:
-            fd, temp_path = tempfile.mkstemp()
-            line=sys.stdin.read()
-            os.write(fd,line)
-            os.close(fd)
-            self.file=temp_path
-            self.is_temp_file=True
-
+        if None ==self.data:
+            if select.select([sys.stdin,],[],[],0.0)[0]:
+                fd, temp_path = tempfile.mkstemp()
+                line=sys.stdin.read()
+                os.write(fd,line)
+                os.close(fd)
+                self.file=temp_path
+                self.is_temp_file=True
+                buffer=self.process_file()
+            else:
+                if None == self.args.file:
+                    raise Exception("No input file available" )
+                self.file=self.args.file
+                if False == os.path.exists(self.file):
+                    raise Exception("file does not exist" )
+                if False == os.path.isfile(self.file):
+                    raise Exception("not a valid file")
         else:
-            if None == self.args.file:
-                raise Exception("No input file available" )
-            self.file=self.args.file
-            if False == os.path.exists(self.file):
-                raise Exception("file does not exist" )
-            if False == os.path.isfile(self.file):
-                raise Exception("not a valid file")
+            buffer=self.data
+
 
 
         # now we have a file, from stdin or a file on the system that we can access    
-        buffer=self.process_file()
         #print buffer
         self.calculate_limits()
         #print(buffer)
