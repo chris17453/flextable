@@ -373,9 +373,7 @@ class table:
                     raise Exception("not a valid file")
             buffer=self.process_file()
         else:
-            print "DATA"
             buffer=self.data
-        print buffer
 
 
         # now we have a file, from stdin or a file on the system that we can access    
