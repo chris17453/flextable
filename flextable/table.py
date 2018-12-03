@@ -3,6 +3,7 @@ import select
 import json
 import os
 import tempfile
+import curses
 
 from style import style
 from colors import *
@@ -12,6 +13,13 @@ class table:
     data_type=enum(COMMENT=1,ERROR=2,DATA=3,WHITESPACE=4)
         
     def __init__(self,args=None):
+        self.stdscr = curses.initscr()
+        curses.cbreak()
+        curses.noecho()
+        self.stdscr.keypad(1)
+
+
+
         self.remove_quote=True
         self.block_quote=None
         self.column_count=0
@@ -80,6 +88,17 @@ class table:
         self.file=None
         self.is_temp_file=False
         self.results=[]
+
+        try:
+            self.height,self.width = stdscr.getmaxyx()
+        finally:
+            curses.nocbreak()
+            stdscr.keypad(0)
+            curses.echo()
+            curses.endwin()
+
+
+
         self.format()
 
     def format_string(self,data,length,fill_character=' ',no_clip=False):
@@ -234,9 +253,9 @@ class table:
     
     def calculate_limits(self):
         tty_min_column_width=1
-        tty_rows, tty_columns = os.popen('stty size', 'r').read().split()
-        tty_rows=int(tty_rows)
-        tty_columns=int(tty_columns)
+        #tty_rows, tty_columns = os.popen('stty size', 'r').read().split()
+        #tty_rows=int(tty_rows)
+        #tty_columns=int(tty_columns)
         #dev size
         #tty_rows=30
         #tty_columns=80
@@ -250,7 +269,7 @@ class table:
             self.column_character_width=-1
         else:
             if self.width=='auto':
-                self.column_character_width=int(tty_columns-pad)/data_column_count
+                self.column_character_width=int(self.width-pad)/data_column_count
                 if self.column_character_width<tty_min_column_width:
                     self.column_character_width=tty_min_column_width
             else:
