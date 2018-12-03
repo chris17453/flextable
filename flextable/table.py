@@ -13,10 +13,22 @@ class table:
     data_type=enum(COMMENT=1,ERROR=2,DATA=3,WHITESPACE=4)
         
     def __init__(self,args=None):
-        self.stdscr = curses.initscr()
-        curses.cbreak()
-        curses.noecho()
-        self.stdscr.keypad(1)
+
+        if args.tty_width==-1:
+            try:
+                self.stdscr = curses.initscr()
+                curses.cbreak()
+                curses.noecho()
+                self.stdscr.keypad(1)
+                self.row_height,self.column_width = self.stdscr.getmaxyx()
+            finally:
+                curses.nocbreak()
+                self.stdscr.keypad(0)
+                curses.echo()
+                curses.endwin()
+        else:
+            self.row_height=args.tty_height
+            self.column_width=args.tty_width
 
 
 
@@ -89,13 +101,6 @@ class table:
         self.is_temp_file=False
         self.results=[]
 
-        try:
-            self.height,self.width = stdscr.getmaxyx()
-        finally:
-            curses.nocbreak()
-            stdscr.keypad(0)
-            curses.echo()
-            curses.endwin()
 
 
 
@@ -253,12 +258,13 @@ class table:
     
     def calculate_limits(self):
         tty_min_column_width=1
-        #tty_rows, tty_columns = os.popen('stty size', 'r').read().split()
-        #tty_rows=int(tty_rows)
-        #tty_columns=int(tty_columns)
-        #dev size
-        #tty_rows=30
-        #tty_columns=80
+        # doesnt work with pipes. ugh
+        # tty_rows, tty_columns = os.popen('stty size', 'r').read().split()
+        # tty_rows=int(tty_rows)
+        # tty_columns=int(tty_columns)
+        # dev size
+        # tty_rows=30
+        # tty_columns=80
 
         
         data_column_count=self.column_count
@@ -269,7 +275,7 @@ class table:
             self.column_character_width=-1
         else:
             if self.width=='auto':
-                self.column_character_width=int(self.width-pad)/data_column_count
+                self.column_character_width=int(self.column_width-1-pad)/data_column_count
                 if self.column_character_width<tty_min_column_width:
                     self.column_character_width=tty_min_column_width
             else:

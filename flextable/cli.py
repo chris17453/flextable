@@ -14,10 +14,8 @@ def cli_main():
 
                                                
     # data
-    parser.add_argument('file', help='The input file to read')
-
+    parser.add_argument('file'    , nargs='?'               ,help='The input file to read')
     parser.add_argument('-c'      ,'--columns'              , help='column names', nargs='+')
-    
     parser.add_argument('-cc'     ,'--column-count'         , help='column count, auto name columns 1-n'                ,default=-1, type=int)
     parser.add_argument('-cir'    ,'--header-on-line'       , help='column names the specified line of input'           ,default=-1, type=int,)
     parser.add_argument('-rq'     ,'--remove-quote'         , help='unwrap fields with block quotes'                    ,default=True)
@@ -25,14 +23,14 @@ def cli_main():
     parser.add_argument('-ds'     ,'--data-on-line'         , help='data starts on this line'                           ,default=1,  type=int)
     
     # table template 
-    parser.add_argument('-ln'     ,'--line-numbers'         , help='show line numbers'                                  ,action='store_true', default=False)
-    parser.add_argument('-bs'     ,'--border-style'         , help='change table style, user definable'                 ,default='default_style.yml')
+    #parser.add_argument('-ln'     ,'--line-numbers'         , help='show line numbers'                                  ,action='store_true', default=False)
+    #parser.add_argument('-bs'     ,'--border-style'         , help='change table style, user definable'                 ,default='default_style.yml')
     parser.add_argument('-nft'    ,'--no-footer'            , help='dont show the footer'                               ,action='store_true', default=False)
     parser.add_argument('-nhd'    ,'--no-header'            , help='dont show header'                                   ,action='store_true', default=False)
     parser.add_argument('-ftc'    ,'--footer-columns'       , help='footer has column names'                            ,action='store_true', default=True)
     parser.add_argument('-hde'    ,'--header-every'         , help='show header every (n) rows'                         ,default=-1, type=int)
 
-    parser.add_argument('-ls'     ,'--line-seperators'      , help='use line seperators for each column of data'        ,action='store_true', default=False)
+    #parser.add_argument('-ls'     ,'--line-seperators'      , help='use line seperators for each column of data'        ,action='store_true', default=False)
     
     # formatting 
     parser.add_argument('-e'      ,'--error'                , help='rows with invalid number of columns are considered errors', action='store_true', default=True)
@@ -50,8 +48,10 @@ def cli_main():
     parser.add_argument('-p'      ,'--page'                 , help='page to start displaying, requires length parameter',type=int,default=-1)
  
     # output
-    parser.add_argument('-y'      ,'--yaml'                 , help='output yaml')
-    parser.add_argument('-j'      ,'--json'                 , help='output json')
+    parser.add_argument('-ttyw'   ,'--tty-width'            , help='width of output in characters'                      ,default=-1, type=int,)
+    parser.add_argument('-ttyh'   ,'--tty-height'           , help='height of output window in characters'              ,default=-1, type=int)
+    #parser.add_argument('-y'      ,'--yaml'                 , help='output yaml')
+    #parser.add_argument('-j'      ,'--json'                 , help='output json')
 
     args=parser.parse_args()
     try:
