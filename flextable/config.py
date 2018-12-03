@@ -14,6 +14,8 @@ class table_config:
         self.delimiter=None
         self.delimiters={'field':',',  'comment':'#'}
         self.length=None
+        self.start.line=0
+        self.page=0
         self.starts_on=1
         self.header=True
         self.footer=True
