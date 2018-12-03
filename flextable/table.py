@@ -357,7 +357,6 @@ class table:
         #here we either pull data from a file or read it from stdio as a if someone is  "cat something|ft"
         #if its a pipe, lets shove it into a temp file
         if None ==self.data:
-            print "File"
             if select.select([sys.stdin,],[],[],0.0)[0]:
                 fd, temp_path = tempfile.mkstemp()
                 line=sys.stdin.read()
@@ -366,7 +365,6 @@ class table:
                 self.config.file=temp_path
                 self.config.is_temp_file=True
             else:
-                print "data"
                 if None == self.config.file:
                     raise Exception("No input file available" )
                 if False == os.path.exists(self.config.file):
@@ -375,8 +373,9 @@ class table:
                     raise Exception("not a valid file")
             buffer=self.process_file()
         else:
+            print "DATA"
             buffer=self.data
-
+        print buffer
 
 
         # now we have a file, from stdin or a file on the system that we can access    
