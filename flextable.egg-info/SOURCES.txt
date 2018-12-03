@@ -4,6 +4,7 @@ setup.py
 flextable/__init__.py
 flextable/cli.py
 flextable/colors.py
+flextable/config.py
 flextable/style.py
 flextable/table.py
 flextable.egg-info/PKG-INFO

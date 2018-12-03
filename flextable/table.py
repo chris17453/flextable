@@ -66,8 +66,7 @@ class table:
 
             # when specifically setting columns up... iverrides auto naming columns
             if None != args.columns:
-                self.config.columns=args.columns
-                self.config.column_count=len(args.columns)
+                self.config.set_columns(args.columns)
             
             
             if args.page>-1 and args.length>1:

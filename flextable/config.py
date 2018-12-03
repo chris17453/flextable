@@ -25,3 +25,8 @@ class table_config:
         self.tab_stop=8
         self.row_heigh=-1
         self.column_width=-1
+    
+    def set_columns(self,columns):
+        if None != columns:
+            self.columns=columns
+            self.column_count=len(columns)
