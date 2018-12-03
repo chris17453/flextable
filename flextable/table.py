@@ -210,7 +210,7 @@ class table:
                 if -1 !=self.config.length and buffer_length>self.config.length:
                     break
 
-                #print line_number-1,self.starts_on,self.length
+                print line_number-1,self.starts_on,self.length
                
                 results['visible_line_number']=visible_line
                 results['file_line_number']=line_number
