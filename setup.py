@@ -3,7 +3,7 @@ from setuptools import setup
 
 setup(
     name='flextable',
-    version='1.0.12',
+    version='1.0.13',
     packages=['flextable',],
     include_package_data=True,
     url='https://github.com/chris17453/flex-table/',

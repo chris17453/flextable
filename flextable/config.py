@@ -8,6 +8,7 @@ class table_config:
         self.hide_errors=False
         self.hide_whitespace=False
         self.starts_on_line=1
+        self.data_on_line=0
         self.header_on_line=0
         self.columns=None
         self.delimiters={'field':',',  'comment':'#'}
