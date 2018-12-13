@@ -11,13 +11,9 @@ setup(
     long_description=open('README.md').read(),
     author= 'Charles Watkins',
     author_email= 'charles@titandws.com',
-    description= '',
+    description= 'tabular data formatter, for code, cli or pipes',
     install_requires=[
     ],
-    #data_files=[
-    #    ('share/icons/hicolor/scalable/apps', ['data/proxx.svg']),
-    #    ('share/applications', ['data/proxx.desktop'])
-    #],
     entry_points="""
         [console_scripts]
         flextable = flextable.cli:cli_main
