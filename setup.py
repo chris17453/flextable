@@ -3,10 +3,10 @@ from setuptools import setup
 
 setup(
     name='flextable',
-    version='1.0.33',
+    version='1.0.34',
     packages=['flextable',],
     include_package_data=True,
-    url='https://github.com/chris17453/flex-table/',
+    url='https://github.com/chris17453/flextable/',
     license='Creative Commons Attribution-Noncommercial-Share Alike license',
     long_description=open('README.md').read(),
     author= 'Charles Watkins',
