@@ -1,7 +1,7 @@
 Metadata-Version: 1.0
 Name: flextable
-Version: 1.0.35
-Summary: UNKNOWN
+Version: 1.0.36
+Summary: tabular data formatter, for code, cli or pipes
 Home-page: https://github.com/chris17453/flextable/
 Author: Charles Watkins
 Author-email: charles@titandws.com
