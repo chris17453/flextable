@@ -12,11 +12,11 @@ from colors import colors,attributes,reset
     #
 
 class style:
-    def __init__(self):
+    def __init__(self,single=True):
         self.whitespace=''
         self.line_ending='LRCF'
         self.color=modes()
-        self.characters=characters(self.color.default)
+        self.characters=characters(self.color.default,single=single)
   
 
 # Helper classes
@@ -83,50 +83,109 @@ class modes:
 
 class characters:
     class char_walls:
-        def __init__(self,default=None):
-            self.left   =color(text=u'║',default=default)
-            self.right  =color(text=u'║',default=default)
-            self.top    =color(text=u'═',default=default)
-            self.bottom =color(text=u'═',default=default)
+        
+        def __init__(self,default=None,single=True):
+            if single is True:
+                l=u'│'
+                r=u'│'
+                t=u'─'
+                b=u'─'
+            else:
+                l=u'║'
+                r=u'║'
+                t=u'═'
+                b=u'═'
+            self.left   =color(text=l,default=default)
+            self.right  =color(text=r,default=default)
+            self.top    =color(text=t,default=default)
+            self.bottom =color(text=b,default=default)
     class char_center:
-        def __init__(self,default=None):
-            self.center = color(text=u'╬',default=default)
-            self.left   = color(text=u'╠',default=default)
-            self.right  = color(text=u'╣',default=default)
+        def __init__(self,default=None,single=True):
+            if single is True:
+                c=u'┼'
+                l=u'├'
+                r=u'┤'
+            else:
+                c=u'╬'
+                l=u'╠'
+                r=u'╣'                        
+            self.center = color(text=c,default=default)
+            self.left   = color(text=l,default=default)
+            self.right  = color(text=r,default=default)
     
     class char_bottom:
-        def __init__(self,default=None):
-            self.left   = color(text=u'╚',default=default)
-            self.center = color(text=u'╩',default=default)
-            self.right  = color(text=u'╝',default=default)
+        def __init__(self,default=None,single=True):
+            if single is True:
+                l=u'└'
+                c=u'┴'
+                r=u'┘'
+            else:
+                l=u'╚'
+                c=u'╩'
+                r=u'╝'
+            self.left   = color(text=l,default=default)
+            self.center = color(text=c,default=default)
+            self.right  = color(text=r,default=default)
     class char_top:
-        def __init__(self,default=None):
-            self.left   = color(text=u'╔',default=default)
-            self.right  = color(text=u'╗',default=default)
-            self.center = color(text=u'╦',default=default)
+        def __init__(self,default=None,single=True):
+            if single is True:
+                l=u'┌'
+                c=u'┐'
+                r=u'┬'
+            else:
+                l=u'╔'
+                c=u'╗'
+                r=u'╦'
+            self.left   = color(text=l,default=default)
+            self.right  = color(text=c,default=default)
+            self.center = color(text=r,default=default)
     class char_header:
-        def __init__(self,default=None):
-            self.left   = color(text=u'╡',default=default,foreground='White')
-            self.right  = color(text=u'╞',default=default,foreground='White')
-            self.center = color(text=u' ',default=default,foreground='green')
+        def __init__(self,default=None,single=True):
+            if single is True:
+                l=u'┤'
+                r=u'├'
+                c=u' '
+            else:
+                l=u'╡'
+                r=u'╞'
+                c=u' '            
+            self.left   = color(text=l,default=default,foreground='White')
+            self.right  = color(text=r,default=default,foreground='White')
+            self.center = color(text=c,default=default,foreground='green')
     class char_mid_header:
-        def __init__(self,default=None):
-            self.left   = color(text=u'-',default=default,foreground='White')
-            self.right  = color(text=u'-',default=default,foreground='White')
-            self.center = color(text=u' ',default=default,foreground='green')
+        def __init__(self,default=None,single=True):
+            if single is True:
+                l=u'-'
+                r=u'-'
+                c=u' '
+            else:
+                l=u'-'
+                r=u'-'
+                c=u' '
+            self.left   = color(text=l,default=default,foreground='White')
+            self.right  = color(text=r,default=default,foreground='White')
+            self.center = color(text=c,default=default,foreground='green')
     class char_footer:
-        def __init__(self,default=None):
-            self.left   = color(text=u'[',default=default,foreground='White') #╡
-            self.right  = color(text=u']',default=default,foreground='White') #╞
-            self.center = color(text=u' ',default=default,foreground='green')
+        def __init__(self,default=None,single=True):
+            if single is True:
+                l=u'['
+                r=u']'
+                c=u' '
+            else:
+                l=u'['
+                r=u']'
+                c=u' '
+            self.left   = color(text=l,default=default,foreground='White') #╡
+            self.right  = color(text=r,default=default,foreground='White') #╞
+            self.center = color(text=c,default=default,foreground='green')
 
-    def __init__(self,default=None):
-        self.walls      =self.char_walls(default=default)
-        self.center     =self.char_center(default=default)
-        self.bottom     =self.char_bottom(default=default)
-        self.top        =self.char_top(default=default)
-        self.header     =self.char_header(default=default)
-        self.mid_header =self.char_mid_header(default=default)
-        self.footer     =self.char_footer(default=default)
+    def __init__(self,default=None,single=True):
+        self.walls      =self.char_walls(default=default,single=single)
+        self.center     =self.char_center(default=default,single=single)
+        self.bottom     =self.char_bottom(default=default,single=single)
+        self.top        =self.char_top(default=default,single=single)
+        self.header     =self.char_header(default=default,single=single)
+        self.mid_header =self.char_mid_header(default=default,single=single)
+        self.footer     =self.char_footer(default=default,single=single)
 
 

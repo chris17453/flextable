@@ -17,8 +17,8 @@ class table:
     data_type=enum(COMMENT=1,ERROR=2,DATA=3,WHITESPACE=4)
     
         
-    def __init__(self,args=None,data=None):
-        self.style=style()
+    def __init__(self,args=None,data=None,single=True):
+        self.style=style(single)
         self.data=data
         self.config=table_config()
 
