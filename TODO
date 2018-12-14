@@ -12,7 +12,7 @@ x column-count
 o header-on-line
 o remove-quote
 o block-quote
-o data-on-line
+x data-on-line
 o line-numbers
 x border-style
 x footer

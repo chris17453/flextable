@@ -387,18 +387,18 @@ class table:
         
         
         if self.config.header==True:
-            print (header)
+            print (header.encode('utf-8'))
         index=1
         for row in rows:
-            print (row)
+            print (row.encode('utf-8'))
             if self.config.header_every>0:                
                 # we want it every N, but not if it bunches up on the footer
                 if index%self.config.header_every==0 and len(buffer)-index>self.config.header_every :
-                    print (mid_header)
+                    print (mid_header.encode('utf-8'))
 
             index+=1
         if self.config.footer==True:
-            print (footer)
+            print (footer.encode('utf-8'))
 
 
     
@@ -406,4 +406,4 @@ class table:
     
     def print_errors(table):
         for e in table.errors:
-            print(e)
+            print(e.encode('utf-8'))
