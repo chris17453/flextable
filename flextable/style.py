@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from colors import colors,attributes,reset
+from .colors import colors, attributes, reset
 
 #def load(name=Default):
     #yaml=None
