@@ -57,9 +57,9 @@ pipfile:
 	
 
 bump:
+	@pipenv run bumpversion patch --allow-dirty
 	@git add -A 
 	@git commit -m 'Bump Version $(shell cat setup.py | grep version | grep -Po "['].*[']" | tr -d "'"))'
-	@pipenv run bumpversion patch --allow-dirty
 	
 build: bump 
 	@find dist -type f -name "*.gz" -exec rm -f {} \;
