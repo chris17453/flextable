@@ -1,7 +1,7 @@
-Metadata-Version: 1.0
+Metadata-Version: 1.1
 Name: flextable
-Version: 1.0.37
-Summary: tabular data formatter, for code, cli or pipes
+Version: 1.0.40
+Summary: UNKNOWN
 Home-page: https://github.com/chris17453/flextable/
 Author: Charles Watkins
 Author-email: charles@titandws.com
@@ -31,3 +31,5 @@ Description: # flextable
         
         
 Platform: UNKNOWN
+Classifier: Programming Language :: Python :: 2.7
+Classifier: Programming Language :: Python :: 3.7
