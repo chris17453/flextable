@@ -1,6 +1,6 @@
 
 def escape(c):
-    return '\033[{}m'.format(c)
+    return u'\033[{}m'.format(c)
 
 def enum(**enums):
     return type('Enum', (), enums)

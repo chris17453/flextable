@@ -5,9 +5,9 @@ import os
 import tempfile
 import curses
 
-from style import style
-from colors import *
-from config import table_config
+from .style import style
+from .colors import *
+from .config import table_config
 
 
 
@@ -350,7 +350,8 @@ class table:
 
         return rows
 
-            
+
+                        
     # with no columns, everything will be run on, not well formated
     def format(self):
 
@@ -377,33 +378,46 @@ class table:
 
 
         # now we have a file, from stdin or a file on the system that we can access    
-        #print buffer
+        # print buffer
         self.calculate_limits()
-        #print(buffer)
+        # print(buffer)
         header=self.build_header()
         mid_header=self.build_header(mid=True)
         rows=self.build_rows(buffer)
         footer=self.build_header(footer=True)
         
-        
-        if self.config.header==True:
-            print (header.encode('utf-8'))
         index=1
+
+        if sys.version_info.major>2:
+            encode=False
+        else:
+            encode=True
+
+
+        if self.config.header==True:
+            self.output(header,encode)
+
         for row in rows:
-            print (row.encode('utf-8'))
+            self.output(row,encode)
+            
             if self.config.header_every>0:                
                 # we want it every N, but not if it bunches up on the footer
                 if index%self.config.header_every==0 and len(buffer)-index>self.config.header_every :
-                    print (mid_header.encode('utf-8'))
-
+                    self.output(mid_header,encode)
             index+=1
         if self.config.footer==True:
-            print (footer.encode('utf-8'))
-
+            self.output(footer,encode)
 
     
         #print ("Error Count: {0}. Results: {1}".format(table.error_count(),table.results_length()) )
     
+    def output(self,text,encode):
+        if encode:
+            print(text.encode('utf-8'))
+        else:
+            print (text)
+
+
     def print_errors(table):
         for e in table.errors:
             print(e.encode('utf-8'))

@@ -57,10 +57,12 @@ class color:
         
         # make safe
         text=u'{}'.format(text)
-        text=text.replace('\t','       ')
+        text=text.replace(u'\t',u'       ')
         
         text=text.rstrip()
         if length!=None:
+            # because python data storage differes in 2&3 (float vs int)
+            length=int(length)
             text=text[:length].ljust(length,fill_character)
         if None!=override:
             return u"{0}{1}".format(override.color,text)    
