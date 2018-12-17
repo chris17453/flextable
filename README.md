@@ -41,37 +41,36 @@ import flextable
 
 - flextanble accepts switches and environment variables
 - switches take precidence
-- developments goal is to be docker / python 2 / 3 ready
 
 ### Options
 
-|Short|Long            |Environment Var          |Default| Description                                                |
-|----|-----------------|-------------------------|-------|------------------------------------------------------------|
-|    | file            |FLEXTABLE_FILE           |       | The input file to read                                     |
-|-c  |--columns        |FLEXTABLE_COLUMNS        |       | column names, comma seperated                              |
-|-cc |--column-count   |FLEXTABLE_COLUMN_COUNT   |       | column count, auto names columns 1-n                       |
-|-hol|--header-on-line |FLEXTABLE_HEADER_ON_LINE |       | auto populate column count/names from this row             |
-|-rq |--remove-quote   |FLEXTABLE_REMOVE_QUOTE   |True   | unwrap fields with block quotes                            |
-|-bq |--block-quote    |FLEXTABLE_BLOCK_QUOTE    |       | field block quote identifier                               |
-|-ds |--data-on-line   |FLEXTABLE_DATA_ON_LINE   |1      | data starts on this line                                   |
-|-bs |--border-style   |FLEXTABLE_BORDER_STYLE   |SINGLE | change table style, SINGLE, DOUBBLE, ASCII                 |
-|-nft|--no-footer      |FLEXTABLE_NO_FOOTER      |True   | dont show the footer                                       |
-|-nhd|--no-header      |FLEXTABLE_NO_HEADER      |True   | dont show header                                           |
-|-ftc|--footer-columns |FLEXTABLE_FOOTER_COLUMNS |True   | footer has column names                                    |
-|-hde|--header-every   |FLEXTABLE_HEADER_EVERY   |       | show header every (n) rows                                 |
-|-e  |--error          |FLEXTABLE_ERROR          |True   | rows with invalid number of columns are considered errors  |
-|-cm |--comment        |FLEXTABLE_COMMENT        |'#'    | character that denotes line is comment                     |
-|-d  |--delimiter      |FLEXTABLE_DELIMITER      |','    | field delimiter                                            |
-|-he |--hide-errors    |FLEXTABLE_HIDE_ERRORS    |False  | do not display errors                                      |
-|-hc |--hide-comments  |FLEXTABLE_HIDE_COMMENTS  |False  | do not display comments                                    |
-|-hw |--hide-whitespace|FLEXTABLE_HIDE_WHITESPACE|False  | do not display whitespace                                  |
-|-l  |--line           |FLEXTABLE_LINE           |1      | line number to start displaying data                       |
-|-len|--length         |FLEXTABLE_LENGTH         |       | number of lines to show, hidden elements count             |
-|-p  |--page           |FLEXTABLE_PAGE           |       | page to start displaying, requires length parameter        |
-|-ow |--width          |FLEXTABLE_WIDTH          | auto  | width of output in characters, if not specified calculated |
-|-oh |--height         |FLEXTABLE_HEIGHT         |       | height of output window in characters                      |
-|-nc |--no-color       |FLEXTABLE_NO_COLOR       |False  | disale color output                                        |
-|-o  |--output         |FLEXTABLE_OUTPUT         |ASCII  | ASCII, YAML, JSON                                          |
+|Short|Long            |Environment Var   |Default| Description                                                |
+|----|-----------------|------------------|-------|------------------------------------------------------------|
+|    | file            |FT_FILE           |       | The input file to read                                     |
+|-c  |--columns        |FT_COLUMNS        |       | column names, comma seperated                              |
+|-cc |--column-count   |FT_COLUMN_COUNT   |       | column count, auto names columns 1-n                       |
+|-hol|--header-on-line |FT_HEADER_ON_LINE |       | auto populate column count/names from this row             |
+|-rq |--remove-quote   |FT_REMOVE_QUOTE   |True   | unwrap fields with block quotes                            |
+|-bq |--block-quote    |FT_BLOCK_QUOTE    |       | field block quote identifier                               |
+|-ds |--data-on-line   |FT_DATA_ON_LINE   |1      | data starts on this line                                   |
+|-bs |--border-style   |FT_BORDER_STYLE   |SINGLE | change table style, SINGLE, DOUBBLE, ASCII                 |
+|-nft|--no-footer      |FT_NO_FOOTER      |True   | dont show the footer                                       |
+|-nhd|--no-header      |FT_NO_HEADER      |True   | dont show header                                           |
+|-ftc|--footer-columns |FT_FOOTER_COLUMNS |True   | footer has column names                                    |
+|-hde|--header-every   |FT_HEADER_EVERY   |       | show header every (n) rows                                 |
+|-e  |--error          |FT_ERROR          |True   | rows with invalid number of columns are considered errors  |
+|-cm |--comment        |FT_COMMENT        |'#'    | character that denotes line is comment                     |
+|-d  |--delimiter      |FT_DELIMITER      |','    | field delimiter                                            |
+|-he |--hide-errors    |FT_HIDE_ERRORS    |False  | do not display errors                                      |
+|-hc |--hide-comments  |FT_HIDE_COMMENTS  |False  | do not display comments                                    |
+|-hw |--hide-whitespace|FT_HIDE_WHITESPACE|False  | do not display whitespace                                  |
+|-l  |--line           |FT_LINE           |1      | line number to start displaying data                       |
+|-len|--length         |FT_LENGTH         |       | number of lines to show, hidden elements count             |
+|-p  |--page           |FT_PAGE           |       | page to start displaying, requires length parameter        |
+|-ow |--width          |FT_WIDTH          | auto  | width of output in characters, if not specified calculated |
+|-oh |--height         |FT_HEIGHT         |       | height of output window in characters                      |
+|-nc |--no-color       |FT_NO_COLOR       |False  | disale color output                                        |
+|-o  |--output         |FT_OUTPUT         |ASCII  | ASCII, YAML, JSON                                          |
 
 ### CLI Results
 
