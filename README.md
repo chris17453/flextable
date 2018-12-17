@@ -6,7 +6,7 @@ Primarilary developed for ddb. It seemed prudent to seperate the concerns involv
 
 ### Pipe a file into a table
 ```bash
-cat file | flextable  -d ',' --line 120 --length 10 -hc -hw -cc 9
+cat file | flextable  -d ',' -cc 9
 ```
 
 ### From the Terminal or Script
@@ -39,6 +39,7 @@ import flextable
 
 ### Options
 |Short|Long            |Environment Var          |Default| Description                                                |
+|----|-----------------|-------------------------|-------|------------------------------------------------------------|
 |    | file            |FLEXTABLE_FILE           |       | The input file to read                                     |
 |-c  |--columns        |FLEXTABLE_COLUMNS        |       | column names, comma seperated                              |
 |-cc |--column-count   |FLEXTABLE_COLUMN_COUNT   |       | column count, auto names columns 1-n                       |
@@ -87,7 +88,8 @@ import flextable
 ## JSON RESULTS
 ```json
 #flextable MOCK_DATA.csv -l 1 -len 10 -cc 6 -d , -o json
-{"header": ["column1", "column2", "column3", "column4", "column5", "column6"], "rows": [{"type": 3, "visible_line_number": 2, "data": ["id", "first_name", "last_name", "email", "gender", "ip_address\n"], "file_line_number": 1, "error": null}, {"type": 3, "visible_line_number": 3, "data": ["2", "Redford", "Ornils", "rornils1@amazon.co.uk", "Male", "24.42.186.82\n"], "file_line_number": 2, "error": null}, {"type": 3, "visible_line_number": 4, "data": ["3", "Grenville", "Buckley", "gbuckley2@gizmodo.com", "Male", "143.223.126.204\n"], "file_line_number": 3, "error": null}, {"type": 3, "visible_line_number": 5, "data": ["4", "Thalia", "Badrock", "tbadrock3@xinhuanet.com", "Female", "113.57.179.78\n"], "file_line_number": 4, "error": null}, {"type": 3, "visible_line_number": 6, "data": ["5", "Julie", "Minchell", "jminchell4@skyrock.com", "Female", "105.165.149.121\n"], "file_line_number": 5, "error": null}, {"type": 3, "visible_line_number": 7, "data": ["6", "Lancelot", "Archibold", "larchibold5@pinterest.com", "Male", "213.155.189.44\n"], "file_line_number": 6, "error": null}, {"type": 3, "visible_line_number": 8, "data": ["7", "Bernie", "Matteucci", "bmatteucci6@bravesites.com", "Male", "109.156.49.36\n"], "file_line_number": 7, "error": null}, {"type": 3, "visible_line_number": 9, "data": ["8", "Flinn", "Mulchrone", "fmulchrone7@naver.com", "Male", "22.84.116.46\n"], "file_line_number": 8, "error": null}, {"type": 3, "visible_line_number": 10, "data": ["9", "Seamus", "Tocque", "stocque8@cnet.com", "Male", "79.30.35.75\n"], "file_line_number": 9, "error": null}, {"type": 3, "visible_line_number": 11, "data": ["10", "Lazare", "Abbett", "labbett9@who.int", "Male", "17.173.76.145\n"], "file_line_number": 10, "error": null}]}
+{"header": ["column1", "column2", "column3", "column4", "column5", "column6"], "rows": [{"type": 3, "data": ["id", "first_name", "last_name", "email", "gender", "ip_address"], "file_line_number": 1, "error": null}, {"type": 3, "data": ["2", "Redford", "Ornils", "rornils1@amazon.co.uk", "Male", "24.42.186.82"], "file_line_number": 2, "error": null}, {"type": 3, "data": ["3", "Grenville", "Buckley", "gbuckley2@gizmodo.com", "Male", "143.223.126.204"], "file_line_number": 3, "error": null}, {"type": 3, "data": ["4", "Thalia", "Badrock", "tbadrock3@xinhuanet.com", "Female", "113.57.179.78"], "file_line_number": 4, "error": null}, {"type": 3, "data": ["5", "Julie", "Minchell", "jminchell4@skyrock.com", "Female", "105.165.149.121"], "file_line_number": 5, "error": null}, {"type": 3, "data": ["6", "Lancelot", "Archibold", "larchibold5@pinterest.com", "Male", "213.155.189.44"], "file_line_number": 6, "error": null}, {"type": 3, "data": ["7", "Bernie", "Matteucci", "bmatteucci6@bravesites.com", "Male", "109.156.49.36"], "file_line_number": 7, "error": null}, {"type": 3, "data": ["8", "Flinn", "Mulchrone", "fmulchrone7@naver.com", "Male", "22.84.116.46"], "file_line_number": 8, "error": null}, {"type": 3, "data": ["9", "Seamus", "Tocque", "stocque8@cnet.com", "Male", "79.30.35.75"], "file_line_number": 9, "error": null}, {"type": 3, "data": ["10", "Lazare", "Abbett", "labbett9@who.int", "Male", "17.173.76.145"], "file_line_number": 10, "error": null}]}
+
 ```
 
 ### YAML RESULTS
@@ -99,50 +101,40 @@ rows:
   error: null
   file_line_number: 1
   type: 3
-  visible_line_number: 2
 - data: ['2', Redford, Ornils, rornils1@amazon.co.uk, Male, 24.42.186.82]
   error: null
   file_line_number: 2
   type: 3
-  visible_line_number: 3
 - data: ['3', Grenville, Buckley, gbuckley2@gizmodo.com, Male, 143.223.126.204]
   error: null
   file_line_number: 3
   type: 3
-  visible_line_number: 4
 - data: ['4', Thalia, Badrock, tbadrock3@xinhuanet.com, Female, 113.57.179.78]
   error: null
   file_line_number: 4
   type: 3
-  visible_line_number: 5
 - data: ['5', Julie, Minchell, jminchell4@skyrock.com, Female, 105.165.149.121]
   error: null
   file_line_number: 5
   type: 3
-  visible_line_number: 6
 - data: ['6', Lancelot, Archibold, larchibold5@pinterest.com, Male, 213.155.189.44]
   error: null
   file_line_number: 6
   type: 3
-  visible_line_number: 7
 - data: ['7', Bernie, Matteucci, bmatteucci6@bravesites.com, Male, 109.156.49.36]
   error: null
   file_line_number: 7
   type: 3
-  visible_line_number: 8
 - data: ['8', Flinn, Mulchrone, fmulchrone7@naver.com, Male, 22.84.116.46]
   error: null
   file_line_number: 8
   type: 3
-  visible_line_number: 9
 - data: ['9', Seamus, Tocque, stocque8@cnet.com, Male, 79.30.35.75]
   error: null
   file_line_number: 9
   type: 3
-  visible_line_number: 10
 - data: ['10', Lazare, Abbett, labbett9@who.int, Male, 17.173.76.145]
   error: null
   file_line_number: 10
   type: 3
-  visible_line_number: 11
 ```

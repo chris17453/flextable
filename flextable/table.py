@@ -215,7 +215,7 @@ class table:
 
                 #print line_number-1,self.starts_on,self.length
                
-                results['visible_line_number']=visible_line
+                #results['visible_line_number']=visible_line
                 results['file_line_number']=line_number
                 # only include raw it there is an error
                 if results['error']!=None:
