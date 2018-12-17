@@ -44,10 +44,6 @@ import flextable
 
 ### Options
 
-- every switch has a coresponding environment variable.
-- env='FT_' + uppercase switch long name ( - turn to _)
-- ex --no-footer = FT_NO_FOOTER
-
 |Short|Long            |Default| Description                                                |
 |----|-----------------|-------|------------------------------------------------------------|
 |    |--file           |       | The input file to read                                     |
