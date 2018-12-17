@@ -1,26 +1,32 @@
 # flextable
+
 tabular data formatter, for code, cli or pipes
 
 ## Purpose
+
 Primarilary developed for ddb. It seemed prudent to seperate the concerns involved into different projects
 
 ### Pipe a file into a table
+
 ```bash
 cat file | flextable  -d ',' -cc 9
 ```
 
 ### From the Terminal or Script
+
 - This will load a text file 
 - that has a ',' delimiter 
 - starting at line 1
 - for 10 lines
 - with a column count of 9
 - from a file named MOCK_DATA.csv
+
 ```bash
 flextable  -d , --line 1 --length 10 -cc 9 --file  MOCK_DATA.csv
 ```
 
 ### format with code
+
 ```python
 import flextable
 
@@ -32,12 +38,13 @@ import flextable
 ```
 
 ### Configuration
+
 - flextanble accepts switches and environment variables
 - switches take precidence
 - developments goal is to be docker / python 2 / 3 ready
 
-
 ### Options
+
 |Short|Long            |Environment Var          |Default| Description                                                |
 |----|-----------------|-------------------------|-------|------------------------------------------------------------|
 |    | file            |FLEXTABLE_FILE           |       | The input file to read                                     |
@@ -66,9 +73,8 @@ import flextable
 |-nc |--no-color       |FLEXTABLE_NO_COLOR       |False  | disale color output                                        |
 |-o  |--output         |FLEXTABLE_OUTPUT         |ASCII  | ASCII, YAML, JSON                                          |
 
-
-
 ### CLI Results
+
 ```text
  #flextable MOCK_DATA.csv -l 1 -len 10 -cc 6 -d ,  
 ┌┤column1    ├┬┤column2    ├┬┤column3    ├┬┤column4    ├┬┤column5    ├┬┤column6    ├┐
@@ -85,7 +91,9 @@ import flextable
 └[column1    ]┴[column2    ]┴[column3    ]┴[column4    ]┴[column5    ]┴[column6    ]┘
 
 ```
+
 ## JSON RESULTS
+
 ```json
 #flextable MOCK_DATA.csv -l 1 -len 10 -cc 6 -d , -o json
 {"header": ["column1", "column2", "column3", "column4", "column5", "column6"], "rows": [{"type": 3, "data": ["id", "first_name", "last_name", "email", "gender", "ip_address"], "file_line_number": 1, "error": null}, {"type": 3, "data": ["2", "Redford", "Ornils", "rornils1@amazon.co.uk", "Male", "24.42.186.82"], "file_line_number": 2, "error": null}, {"type": 3, "data": ["3", "Grenville", "Buckley", "gbuckley2@gizmodo.com", "Male", "143.223.126.204"], "file_line_number": 3, "error": null}, {"type": 3, "data": ["4", "Thalia", "Badrock", "tbadrock3@xinhuanet.com", "Female", "113.57.179.78"], "file_line_number": 4, "error": null}, {"type": 3, "data": ["5", "Julie", "Minchell", "jminchell4@skyrock.com", "Female", "105.165.149.121"], "file_line_number": 5, "error": null}, {"type": 3, "data": ["6", "Lancelot", "Archibold", "larchibold5@pinterest.com", "Male", "213.155.189.44"], "file_line_number": 6, "error": null}, {"type": 3, "data": ["7", "Bernie", "Matteucci", "bmatteucci6@bravesites.com", "Male", "109.156.49.36"], "file_line_number": 7, "error": null}, {"type": 3, "data": ["8", "Flinn", "Mulchrone", "fmulchrone7@naver.com", "Male", "22.84.116.46"], "file_line_number": 8, "error": null}, {"type": 3, "data": ["9", "Seamus", "Tocque", "stocque8@cnet.com", "Male", "79.30.35.75"], "file_line_number": 9, "error": null}, {"type": 3, "data": ["10", "Lazare", "Abbett", "labbett9@who.int", "Male", "17.173.76.145"], "file_line_number": 10, "error": null}]}
@@ -93,6 +101,7 @@ import flextable
 ```
 
 ### YAML RESULTS
+
 ```yaml
 #flextable MOCK_DATA.csv -l 1 -len 10 -cc 6 -d , -o yaml
 header: [column1, column2, column3, column4, column5, column6]
