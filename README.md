@@ -46,7 +46,7 @@ import flextable
 
 |Short|Long            |Environment Var   |Default| Description                                                |
 |----|-----------------|------------------|-------|------------------------------------------------------------|
-|    | file            |FT_FILE           |       | The input file to read                                     |
+|    |--file           |FT_FILE           |       | The input file to read                                     |
 |-c  |--columns        |FT_COLUMNS        |       | column names, comma seperated                              |
 |-cc |--column-count   |FT_COLUMN_COUNT   |       | column count, auto names columns 1-n                       |
 |-hol|--header-on-line |FT_HEADER_ON_LINE |       | auto populate column count/names from this row             |
