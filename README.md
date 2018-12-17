@@ -1,15 +1,15 @@
 # flextable
 tabular data formatter, for code, cli or pipes
 
-##Purpose
+## Purpose
 Primarilary developed for ddb. It seemed prudent to seperate the concerns involved into different projects
 
 ### Pipe a file into a table
 ```
-cat file | python flextable/cli.py  -d ',' --line 120 --length 10 -hc -hw -cc 9
+cat file | flextable  -d ',' --line 120 --length 10 -hc -hw -cc 9
 ```
 
-### load a file with the cli
+### From the Terminal or Script
 - This will load a text file 
 - that has a ',' delimiter 
 - starting at line 1
@@ -22,9 +22,13 @@ flextable  -d , --line 1 --length 10 -cc 9 --file  MOCK_DATA.csv
 
 ### format with code
 ```
-from flextable import table
+import flextable
 
-print table(args).format()
+
+ config = flextable.table_config()
+ config.columns = ['column1','column2','column3','column4','column5','column6']
+ results=[some python object with an array of arrays]
+ flextable.table(data=results, args=config)
 ```
 
 ### Configuration
