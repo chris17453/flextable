@@ -29,8 +29,11 @@ class table_config:
         self.tab_stop=8
         self.row_height=-1
         self.column_width=-1
-        self.tty_width=0
-        self.tty_height=0
+        self.width=0
+        self.height=0
+        self.output='ASCII'
+        self.no_color=False
+        self.render_color=True #computed
     
     def set_columns(self,columns):
         if None != columns:

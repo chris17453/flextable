@@ -1,10 +1,15 @@
 import argparse
+from  os import environ
 
 from .table import table
 
 # table takes the data a s a file stream
 
-
+def get_envvar(env_var,default=None):
+    found=default
+    if env_var in environ:
+        found=environ['env_var']
+    return found
 
 
 def cli_main():
@@ -13,52 +18,40 @@ def cli_main():
                     """ascii table formatting with flexible columns, and styling
                     """, epilog="And that's how you flextable")
 
+    # TODO
+    # parser.add_argument('-ln'     ,'--line-numbers'         , help='show line numbers'                                  ,action='store_true', default=False)
+    # parser.add_argument('-ls'     ,'--line-seperators'      , help='use line seperators for each column of data'        ,action='store_true', default=False)
 
     # data
-    parser.add_argument('file'    , nargs='?'               ,help='The input file to read')
-    parser.add_argument('-c'      ,'--columns'              , help='column names', nargs='+')
-    parser.add_argument('-cc'     ,'--column-count'         , help='column count, auto name columns 1-n'                ,default=-1, type=int)
-    parser.add_argument('-cir'    ,'--header-on-line'       , help='column names the specified line of input'           ,default=-1, type=int,)
-    parser.add_argument('-rq'     ,'--remove-quote'         , help='unwrap fields with block quotes'                    ,default=True)
-    parser.add_argument('-bq'     ,'--block-quote'          , help='field block quote identifier'                       ,default=None)
-    parser.add_argument('-ds'     ,'--data-on-line'         , help='data starts on this line'                           ,default=1,  type=int)
-
-    # table template 
-    #parser.add_argument('-ln'     ,'--line-numbers'         , help='show line numbers'                                  ,action='store_true', default=False)
-    #parser.add_argument('-bs'     ,'--border-style'         , help='change table style, user definable'                 ,default='default_style.yml')
-    parser.add_argument('-nft'    ,'--no-footer'            , help='dont show the footer'                               ,action='store_false', default=True,dest='footer')
-    parser.add_argument('-nhd'    ,'--no-header'            , help='dont show header'                                   ,action='store_false', default=True,dest='header')
-    parser.add_argument('-ftc'    ,'--footer-columns'       , help='footer has column names'                            ,action='store_true', default=True)
-    parser.add_argument('-hde'    ,'--header-every'         , help='show header every (n) rows'                         ,default=-1, type=int)
-
-    #parser.add_argument('-ls'     ,'--line-seperators'      , help='use line seperators for each column of data'        ,action='store_true', default=False)
-
-    # formatting 
-    parser.add_argument('-e'      ,'--error'                , help='rows with invalid number of columns are considered errors', action='store_true', default=True)
-    parser.add_argument('-cm'     ,'--comment'              , help='character that denotes line is comment, \'#\' default'    , default="#")
-    parser.add_argument('-d'      ,'--delimiter'            , help='field delimiter \',\' default'                      ,default=",")
-
-    # display
-    parser.add_argument('-he'      ,'--hide-errors'         , help='do not display errors'                              ,action='store_true' ,default=False)
-    parser.add_argument('-hc'      ,'--hide-comments'       , help='do not display comments'                            ,action='store_true' ,default=False)
-    parser.add_argument('-hw'      ,'--hide-whitespace'     , help='do not display whitespace'                          ,action='store_true' ,default=False)
-
-    # limit,pagination
-    parser.add_argument('-l'      ,'--line'                 , help='line number to start displaying data from in file'  ,type=int,default=-1)
-    parser.add_argument('-len'    ,'--length'               , help='number of lines to show, hidden lines do not count' ,type=int,default=-1)
-    parser.add_argument('-p'      ,'--page'                 , help='page to start displaying, requires length parameter',type=int,default=-1)
-
-    # output
-    parser.add_argument('-ttyw'   ,'--tty-width'            , help='width of output in characters'                      ,default=-1, type=int,dest='column_width')
-    parser.add_argument('-ttyh'   ,'--tty-height'           , help='height of output window in characters'              ,default=-1, type=int,dest='row_height')
-    #parser.add_argument('-y'      ,'--yaml'                 , help='output yaml')
-    #parser.add_argument('-j'      ,'--json'                 , help='output json')
-
+    parser.add_argument('file' , nargs='?'         , default=get_envvar('FLEXTABLE_FILE'                    ), help='The input file to read'                                   )
+    parser.add_argument('-c'   ,'--columns'        , default=get_envvar('FLEXTABLE_COLUMNS'                 ), help='column names'                                             , nargs='+')
+    parser.add_argument('-cc'  ,'--column-count'   , default=get_envvar('FLEXTABLE_COLUMN_COUNT'   ,-1      ), help='column count, auto name columns 1-n'                      , type=int)
+    parser.add_argument('-hol' ,'--header-on-line' , default=get_envvar('FLEXTABLE_HEADER_ON_LINE' ,-1      ), help='column names the specified line of input'                 , type=int,)
+    parser.add_argument('-rq'  ,'--remove-quote'   , default=get_envvar('FLEXTABLE_REMOVE_QUOTE'   ,True    ), help='unwrap fields with block quotes'                          )
+    parser.add_argument('-bq'  ,'--block-quote'    , default=get_envvar('FLEXTABLE_BLOCK_QUOTE'    ,None    ), help='field block quote identifier'                             )
+    parser.add_argument('-ds'  ,'--data-on-line'   , default=get_envvar('FLEXTABLE_DATA_ON_LINE'   ,1       ), help='data starts on this line'                                 , type=int)
+    parser.add_argument('-bs'  ,'--border-style'   , default=get_envvar('FLEXTABLE_BORDER_STYLE'   ,'SINGLE'), help='change table style, single,doubble, ascii'                )
+    parser.add_argument('-nft' ,'--no-footer'      , default=get_envvar('FLEXTABLE_NO_FOOTER'      ,True    ), help='dont show the footer'                                     , action='store_false' , dest='footer')
+    parser.add_argument('-nhd' ,'--no-header'      , default=get_envvar('FLEXTABLE_NO_HEADER'      ,True    ), help='dont show header'                                         , action='store_false' , dest='header')
+    parser.add_argument('-ftc' ,'--footer-columns' , default=get_envvar('FLEXTABLE_FOOTER_COLUMNS' ,True    ), help='footer has column names'                                  , action='store_true'   )
+    parser.add_argument('-hde' ,'--header-every'   , default=get_envvar('FLEXTABLE_HEADER_EVERY'   ,-1      ), help='show header every (n) rows'                               , type=int)
+    parser.add_argument('-e'   ,'--error'          , default=get_envvar('FLEXTABLE_ERROR'          ,True    ), help='rows with invalid number of columns are considered errors', action='store_true')
+    parser.add_argument('-cm'  ,'--comment'        , default=get_envvar('FLEXTABLE_COMMENT'        ,'#'     ), help='character that denotes line is comment, \'#\' default'    )
+    parser.add_argument('-d'   ,'--delimiter'      , default=get_envvar('FLEXTABLE_DELIMITER'      ,','     ), help='field delimiter \',\' default'                            )
+    parser.add_argument('-he'  ,'--hide-errors'    , default=get_envvar('FLEXTABLE_HIDE_ERRORS'    ,False   ), help='do not display errors'                                    , action='store_true')
+    parser.add_argument('-hc'  ,'--hide-comments'  , default=get_envvar('FLEXTABLE_HIDE_COMMENTS'  ,False   ), help='do not display comments'                                  , action='store_true')
+    parser.add_argument('-hw'  ,'--hide-whitespace', default=get_envvar('FLEXTABLE_HIDE_WHITESPACE',False   ), help='do not display whitespace'                                , action='store_true')
+    parser.add_argument('-l'   ,'--line'           , default=get_envvar('FLEXTABLE_LINE'           ,-1      ), help='line number to start displaying data from in file'        , type=int)
+    parser.add_argument('-len' ,'--length'         , default=get_envvar('FLEXTABLE_LENGTH'         ,-1      ), help='number of lines to show, hidden lines do not count'       , type=int)
+    parser.add_argument('-p'   ,'--page'           , default=get_envvar('FLEXTABLE_PAGE'           ,-1      ), help='page to start displaying, requires length parameter'      , type=int)
+    parser.add_argument('-ow'  ,'--width'          , default=get_envvar('FLEXTABLE_WIDTH'          ,-1      ), help='width of output in characters'                            , type=int, dest='column_width')
+    parser.add_argument('-oh'  ,'--height'         , default=get_envvar('FLEXTABLE_HEIGHT'         ,-1      ), help='height of output window in characters'                    , type=int, dest='row_height')
+    parser.add_argument('-nc'  ,'--no-color'       , default=get_envvar('FLEXTABLE_NO_COLOR'       ,False   ), help='disale color output'                                      , action='store_true')
+    parser.add_argument('-o'   ,'--output'         , default=get_envvar('FLEXTABLE_OUTPUT'         ,'ASCII' ), help='ASCII, YAML, JSON, default=ASCII'                         )
+    
     args=parser.parse_args()
-    #try:
-    table(args)
-    # except Exception as ex:
-    #    print "Error:",ex
 
+    table(args)
+    
 if __name__ == "__main__":
     cli_main()

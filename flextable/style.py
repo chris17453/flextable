@@ -46,7 +46,7 @@ class color:
         self.text=text
                 
     
-    def render(self,text=None,length=None,fill_character=' ',override=None):
+    def render(self,text=None, length=None,fill_character=' ',override=None,use_color=True):
         if text==None:
             text=self.text
 
@@ -64,6 +64,8 @@ class color:
             # because python data storage differes in 2&3 (float vs int)
             length=int(length)
             text=text[:length].ljust(length,fill_character)
+        if use_color is False or use_color is None:
+            return text
         if None!=override:
             return u"{0}{1}".format(override.color,text)    
         return u"{0}{1}{2}".format(self.color,text,self.reset)

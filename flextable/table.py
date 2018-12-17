@@ -1,6 +1,5 @@
 import sys
 import select
-import json
 import os
 import tempfile
 import curses
@@ -37,11 +36,12 @@ class table:
                     curses.echo()
                     curses.endwin()
             else:
-                self.config.row_height=args.column_height
+                self.config.row_height=args.row_height
                 self.config.column_width=args.column_width
 
             self.args=args
-            self.config.file=args.file
+            self.config.output=args.output
+            self.config.no_color=args.no_color
             self.config.remove_quote=args.remove_quote
             self.config.block_quote==args.block_quote
                     
@@ -55,6 +55,7 @@ class table:
             self.config.header=args.header
             self.config.footer=args.footer
             self.config.header_every=args.header_every
+            self.config.file=args.file
             #auto name columns
             if args.column_count>-1:
                 self.config.column_count=args.column_count
@@ -79,8 +80,8 @@ class table:
         self.config.is_temp_file=False
         self.results=[]
 
-
-
+        if self.config.no_color is True or self.config.output !='ASCII':
+            self.config.render_color=False
 
         self.format()
 
@@ -88,6 +89,7 @@ class table:
     def process_line(self,line,line_number=0):
         err=None
         line_data=None
+        line=line.rstrip('\r\n')
         if self.config.data_on_line>line_number:
             line_type=self.config.data_type.COMMENT
             line_data=[line]
@@ -106,6 +108,7 @@ class table:
 
     def process_data(self,line,line_number):
         err=None
+        line=line.strip()
         # ok its data. lets split it up and check for errors
         line_data=line.split(self.config.delimiters['field'])
         line_column_count=len(line_data)
@@ -175,7 +178,7 @@ class table:
              
                 #print self.starts_on,line_number
                 # below visible window.. skip
-                if  self.config.starts_on>=line_number:
+                if  self.config.starts_on>line_number:
                     continue
 
                 results=self.process_line(line,line_number)
@@ -214,7 +217,10 @@ class table:
                
                 results['visible_line_number']=visible_line
                 results['file_line_number']=line_number
-                results['raw']=line
+                # only include raw it there is an error
+                if results['error']!=None:
+                    results['raw']=line
+
                 buffer.append(results)
 
 
@@ -234,17 +240,18 @@ class table:
         
         data_column_count=self.config.column_count
         pad=data_column_count+1
-
         # no columns to return
         if data_column_count==0:
             self.config.column_character_width=-1
         else:
-            if self.config.width=='auto':
-                self.config.column_character_width=int(self.config.column_width-1-pad)/data_column_count
+            if self.config.column_width!=-1:
+                self.config.column_character_width=int(int(self.config.column_width-1-pad)/data_column_count)
                 if self.config.column_character_width<tty_min_column_width:
                     self.config.column_character_width=tty_min_column_width
-            else:
-                self.config.column_character_width=int(self.config.width)
+            #@else:
+            #    print(self.config.column_width)
+            #    self.config.column_character_width=int(self.config.width)
+
 
         self.config.total_width=self.config.column_character_width*data_column_count+data_column_count-1
 
@@ -261,7 +268,7 @@ class table:
         if mid==True:
                 base=self.style.characters.center
                 column=self.style.characters.mid_header
-        header=base.left.render()
+        header=base.left.render(use_color=self.config.render_color)
 
         column_pad=0
         if None!=column.left.text:
@@ -274,13 +281,13 @@ class table:
             for c in self.config.columns:
                 column_display=u''
                 if None!=column.left.text:
-                    column_display=column.left.render()
+                    column_display=column.left.render(use_color=self.config.render_color)
 
-                column_display+=column.center.render(text=c,length=self.config.column_character_width-column_pad)
+                column_display+=column.center.render(use_color=self.config.render_color,text=c,length=self.config.column_character_width-column_pad)
                 #print self.column_character_width-column_pad
 
                 if None!=column.right.text:
-                    column_display+=column.right.render()
+                    column_display+=column.right.render(use_color=self.config.render_color)
                 
 
                 header+=column_display
@@ -288,11 +295,11 @@ class table:
                 # if we have overflow, change the column wall ont he right
                 if index<len(self.config.columns)-1:
                     if len('{}'.format(c))>self.config.column_character_width-2:
-                        header+=base.center.render(override=self.style.color.overflow)
+                        header+=base.center.render(use_color=self.config.render_color,override=self.style.color.overflow)
                     else:
-                        header+=base.center.render()
+                        header+=base.center.render(use_color=self.config.render_color)
                 index+=1
-        header+=base.right.render()
+        header+=base.right.render(use_color=self.config.render_color)
         header+=u'{}'.format(reset.ALL)
 
 
@@ -303,38 +310,39 @@ class table:
         index=0
         if True == isinstance(buffer,list):
             for line in buffer:
-                columns=self.style.characters.walls.left.render()
+                columns=self.style.characters.walls.left.render(use_color=self.config.render_color)
                 #print line
+                
                 if self.data_type.DATA == line['type']:
                     for c in line['data']:
-                        columns+=self.style.color.data.render(c,length=self.config.column_character_width)
-                        # if we have overflow, change the column wall ont he right
+                        columns+=self.style.color.data.render(c,use_color=self.config.render_color,length=self.config.column_character_width)
+                        # if we have overflow, change the column wall on the right
                         if len('{}'.format(c))>self.config.column_character_width:
-                            columns+=self.style.characters.walls.right.render(override=self.style.color.overflow)
+                            columns+=self.style.characters.walls.right.render(use_color=self.config.render_color,override=self.style.color.overflow)
                         else:
-                            columns+=self.style.characters.walls.right.render()
+                            columns+=self.style.characters.walls.right.render(use_color=self.config.render_color)
                         
                     #only happend if we allow errored rows            
                     if len(line['data']) < self.config.column_count:
                         wall_color=bcolors.OKBLUE
                         for c in range(len(line['data']),self.config.column_count):
-                            columns+=self.style.color.comment.render('',length=self.config.column_character_width)
-                            columns+=self.style.characters.walls.right.render(override=self.style.color.error)
+                            columns+=self.style.color.comment.render('',use_color=self.config.render_color,length=self.config.column_character_width)
+                            columns+=self.style.characters.walls.right.render(use_color=self.config.render_color,override=self.style.color.error)
                             
                 
                 
                 if self.data_type.COMMENT ==  line['type'] or self.data_type.WHITESPACE==line['type']:
-                    left  =self.style.characters.walls.left.render()
-                    center=self.style.color.comment.render(line['raw'],length=self.config.total_width)
-                    right =self.style.characters.walls.right.render()
+                    left  =self.style.characters.walls.left.render(use_color=self.config.render_color)
+                    center=self.style.color.comment.render(line['raw'],use_color=self.config.render_color,length=self.config.total_width)
+                    right =self.style.characters.walls.right.render(use_color=self.config.render_color)
                     columns=u"{0}{1}{2}".format( left,
                                                 center,
                                                 right)
                 
                 if self.data_type.ERROR ==  line['type']:
-                    left  =self.style.characters.walls.left.render()
-                    center=self.style.color.error.render(line['raw'],length=self.config.total_width)
-                    right =self.style.characters.walls.right.render()
+                    left  =self.style.characters.walls.left.render(use_color=self.config.render_color)
+                    center=self.style.color.error.render(line['raw'],use_color=self.config.render_color,length=self.config.total_width)
+                    right =self.style.characters.walls.right.render(use_color=self.config.render_color)
                     columns=u"{0}{1}{2}".format( left,
                                                 center,
                                                 right)
@@ -375,39 +383,55 @@ class table:
             buffer=self.process_file()
         else:
             buffer=self.data
+        #print(buffer)
 
 
         # now we have a file, from stdin or a file on the system that we can access    
         # print buffer
         self.calculate_limits()
         # print(buffer)
-        header=self.build_header()
-        mid_header=self.build_header(mid=True)
-        rows=self.build_rows(buffer)
-        footer=self.build_header(footer=True)
-        
-        index=1
-
-        if sys.version_info.major>2:
-            encode=False
-        else:
-            encode=True
-
-
-        if self.config.header==True:
-            self.output(header,encode)
-
-        for row in rows:
-            self.output(row,encode)
+        #print(rows)
+        if self.config.output=='ASCII':
+            header=self.build_header()
+            mid_header=self.build_header(mid=True)
+            footer=self.build_header(footer=True)
+            rows=self.build_rows(buffer)
             
-            if self.config.header_every>0:                
-                # we want it every N, but not if it bunches up on the footer
-                if index%self.config.header_every==0 and len(buffer)-index>self.config.header_every :
-                    self.output(mid_header,encode)
-            index+=1
-        if self.config.footer==True:
-            self.output(footer,encode)
+            index=1
 
+            if sys.version_info.major>2:
+                encode=False
+            else:
+                encode=True
+
+
+            if self.config.header==True:
+                self.output(header,encode)
+
+            for row in rows:
+                self.output(row,encode)
+                
+                if self.config.header_every>0:                
+                    # we want it every N, but not if it bunches up on the footer
+                    if index%self.config.header_every==0 and len(buffer)-index>self.config.header_every :
+                        self.output(mid_header,encode)
+                index+=1
+            if self.config.footer==True:
+                self.output(footer,encode)
+            return
+        try:
+            if self.config.output.upper()=='JSON':
+                import json
+                print( json.dumps({'rows':buffer,'header':self.config.columns}, ensure_ascii=False))
+
+            if self.config.output.upper()=='YAML':
+               import yaml
+               yaml.dump({'rows':buffer,'header':self.config.columns}, sys.stdout)
+        except Exception as ex:
+            print (ex)
+
+            
+        
     
         #print ("Error Count: {0}. Results: {1}".format(table.error_count(),table.results_length()) )
     
