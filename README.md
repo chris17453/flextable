@@ -5,7 +5,7 @@ tabular data formatter, for code, cli or pipes
 Primarilary developed for ddb. It seemed prudent to seperate the concerns involved into different projects
 
 ### Pipe a file into a table
-```
+```bash
 cat file | flextable  -d ',' --line 120 --length 10 -hc -hw -cc 9
 ```
 
@@ -16,12 +16,12 @@ cat file | flextable  -d ',' --line 120 --length 10 -hc -hw -cc 9
 - for 10 lines
 - with a column count of 9
 - from a file named MOCK_DATA.csv
-```
+```bash
 flextable  -d , --line 1 --length 10 -cc 9 --file  MOCK_DATA.csv
 ```
 
 ### format with code
-```
+```python
 import flextable
 
 
