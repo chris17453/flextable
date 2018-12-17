@@ -44,33 +44,68 @@ import flextable
 
 ### Options
 
-|Short|Long            |Environment Var   |Default| Description                                                |
-|----|-----------------|------------------|-------|------------------------------------------------------------|
-|    |--file           |FT_FILE           |       | The input file to read                                     |
-|-c  |--columns        |FT_COLUMNS        |       | column names, comma seperated                              |
-|-cc |--column-count   |FT_COLUMN_COUNT   |       | column count, auto names columns 1-n                       |
-|-hol|--header-on-line |FT_HEADER_ON_LINE |       | auto populate column count/names from this row             |
-|-rq |--remove-quote   |FT_REMOVE_QUOTE   |True   | unwrap fields with block quotes                            |
-|-bq |--block-quote    |FT_BLOCK_QUOTE    |       | field block quote identifier                               |
-|-ds |--data-on-line   |FT_DATA_ON_LINE   |1      | data starts on this line                                   |
-|-bs |--border-style   |FT_BORDER_STYLE   |SINGLE | change table style, SINGLE, DOUBBLE, ASCII                 |
-|-nft|--no-footer      |FT_NO_FOOTER      |True   | dont show the footer                                       |
-|-nhd|--no-header      |FT_NO_HEADER      |True   | dont show header                                           |
-|-ftc|--footer-columns |FT_FOOTER_COLUMNS |True   | footer has column names                                    |
-|-hde|--header-every   |FT_HEADER_EVERY   |       | show header every (n) rows                                 |
-|-e  |--error          |FT_ERROR          |True   | rows with invalid number of columns are considered errors  |
-|-cm |--comment        |FT_COMMENT        |'#'    | character that denotes line is comment                     |
-|-d  |--delimiter      |FT_DELIMITER      |','    | field delimiter                                            |
-|-he |--hide-errors    |FT_HIDE_ERRORS    |False  | do not display errors                                      |
-|-hc |--hide-comments  |FT_HIDE_COMMENTS  |False  | do not display comments                                    |
-|-hw |--hide-whitespace|FT_HIDE_WHITESPACE|False  | do not display whitespace                                  |
-|-l  |--line           |FT_LINE           |1      | line number to start displaying data                       |
-|-len|--length         |FT_LENGTH         |       | number of lines to show, hidden elements count             |
-|-p  |--page           |FT_PAGE           |       | page to start displaying, requires length parameter        |
-|-ow |--width          |FT_WIDTH          | auto  | width of output in characters, if not specified calculated |
-|-oh |--height         |FT_HEIGHT         |       | height of output window in characters                      |
-|-nc |--no-color       |FT_NO_COLOR       |False  | disale color output                                        |
-|-o  |--output         |FT_OUTPUT         |ASCII  | ASCII, YAML, JSON                                          |
+- every switch has a coresponding environment variable.
+- env='FT_' + uppercase switch long name ( - turn to _)
+- ex --no-footer = FT_NO_FOOTER
+
+|Short|Long            |Default| Description                                                |
+|----|-----------------|-------|------------------------------------------------------------|
+|    |--file           |       | The input file to read                                     |
+|-c  |--columns        |       | column names, comma seperated                              |
+|-cc |--column-count   |       | column count, auto names columns 1-n                       |
+|-hol|--header-on-line |       | auto populate column count/names from this row             |
+|-rq |--remove-quote   |True   | unwrap fields with block quotes                            |
+|-bq |--block-quote    |       | field block quote identifier                               |
+|-ds |--data-on-line   |1      | data starts on this line                                   |
+|-bs |--border-style   |SINGLE | change table style, SINGLE, DOUBBLE, ASCII                 |
+|-nft|--no-footer      |True   | dont show the footer                                       |
+|-nhd|--no-header      |True   | dont show header                                           |
+|-ftc|--footer-columns |True   | footer has column names                                    |
+|-hde|--header-every   |       | show header every (n) rows                                 |
+|-e  |--error          |True   | rows with invalid number of columns are considered errors  |
+|-cm |--comment        |'#'    | character that denotes line is comment                     |
+|-d  |--delimiter      |','    | field delimiter                                            |
+|-he |--hide-errors    |False  | do not display errors                                      |
+|-hc |--hide-comments  |False  | do not display comments                                    |
+|-hw |--hide-whitespace|False  | do not display whitespace                                  |
+|-l  |--line           |1      | line number to start displaying data                       |
+|-len|--length         |       | number of lines to show, hidden elements count             |
+|-p  |--page           |       | page to start displaying, requires length parameter        |
+|-ow |--width          | auto  | width of output in characters, if not specified calculated |
+|-oh |--height         |       | height of output window in characters                      |
+|-nc |--no-color       |False  | disale color output                                        |
+|-o  |--output         |ASCII  | ASCII, YAML, JSON                                          |
+
+
+## Environment vars
+
+|Long             |Environment Var   |
+|-----------------|------------------|
+|--file           |FT_FILE           |
+|--columns        |FT_COLUMNS        |
+|--column-count   |FT_COLUMN_COUNT   |
+|--header-on-line |FT_HEADER_ON_LINE |
+|--remove-quote   |FT_REMOVE_QUOTE   |
+|--block-quote    |FT_BLOCK_QUOTE    |
+|--data-on-line   |FT_DATA_ON_LINE   |
+|--border-style   |FT_BORDER_STYLE   |
+|--no-footer      |FT_NO_FOOTER      |
+|--no-header      |FT_NO_HEADER      |
+|--footer-columns |FT_FOOTER_COLUMNS |
+|--header-every   |FT_HEADER_EVERY   |
+|--error          |FT_ERROR          |
+|--comment        |FT_COMMENT        |
+|--delimiter      |FT_DELIMITER      |
+|--hide-errors    |FT_HIDE_ERRORS    |
+|--hide-comments  |FT_HIDE_COMMENTS  |
+|--hide-whitespace|FT_HIDE_WHITESPACE|
+|--line           |FT_LINE           |
+|--length         |FT_LENGTH         |
+|--page           |FT_PAGE           |
+|--width          |FT_WIDTH          |
+|--height         |FT_HEIGHT         |
+|--no-color       |FT_NO_COLOR       |
+|--output         |FT_OUTPUT         |
 
 ### CLI Results
 
